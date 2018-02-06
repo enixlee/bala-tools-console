@@ -1,0 +1,50 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: zhipeng
+ * Date: 15/10/12
+ * Time: 下午8:43
+ */
+require __DIR__ . '/bootstrap/autoload.php';
+require __DIR__ . "/Helper.php";
+
+$exts = ['php', 'rtf', 'yaml'];    // 需要打包的文件后缀, twig是模版文件, 你还可以安需加入html等后缀
+$dir = __DIR__;             // 需要打包的目录
+$file = 'zeus.phar';      // 包的名称, 注意它不仅仅是一个文件名, 在stub中也会作为入口前缀
+$pharFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . $file;
+$phar = new Phar($pharFilePath, FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::KEY_AS_FILENAME, $file);
+
+//配置版本号
+$configPath = __DIR__ . DIRECTORY_SEPARATOR . 'configs/config.yaml';
+$configs = \Symfony\Component\Yaml\Yaml::parse(file_get_contents($configPath));
+$version = $configs['version'];
+$version++;
+$configs['version'] = $version;
+$buildTime = date('Ymd-His');
+$configs['buildTime'] = $buildTime;
+$fs = new \Symfony\Component\Filesystem\Filesystem();
+$fs->dumpFile($configPath,\Symfony\Component\Yaml\Yaml::dump($configs));
+
+// 开始打包
+$phar->startBuffering();
+// 将后缀名相关的文件打包
+foreach ($exts as $ext) {
+    $phar->buildFromDirectory($dir, '/\.' . $ext . '$/');
+}
+
+
+$phar->addFile('zeus');
+//删除用户配置
+$phar->delete("configs/config-user.yaml");
+// 把build.php本身摘除
+$phar->delete('build.php');
+// 设置入口
+$phar->setStub("<?php
+Phar::mapPhar('{$file}');
+require 'phar://{$file}/zeus';
+__HALT_COMPILER();
+?>");
+$phar->stopBuffering();
+// 打包完成
+
+echo "Finished {$file} \nPath: {$pharFilePath} \nVersion: {$version} \nbuildTime: {$buildTime}\n";

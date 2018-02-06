@@ -1,0 +1,18 @@
+version: 2.1.2
+buildTime: 20171121-171829
+SVNUserName: zhipeng
+SVNPassWord: zhipeng001
+MakeClass.DBSExportPath: null
+MakeClass.DBSTemplatePath: null
+miniPay.codeGenerate.rpcGenerate.ConfigPath: '/Users/zhipeng/Documents/Object/minipay/minipay-code-template (trunk)/CodeTemplates/conf'
+miniPay.codeGenerate.rpcGenerate.TemplatePath: '/Users/zhipeng/Documents/Object/minipay/minipay-code-template (trunk)/CodeTemplates/Rpc'
+miniPay.codeGenerate.rpcGenerate.ExportPath: '/Users/zhipeng/Documents/Object/minipay/minipay-code-template (trunk)/Generator/Logics'
+miniPay.codeGenerate.rpcGenerate.ExportTestsPath: '/Users/zhipeng/Documents/Object/minipay/minipay-code-template (trunk)/Generator/TestUnit'
+miniPay.codeGenerate.rpcGenerate.ExportBridgePath: '/Users/zhipeng/Documents/Object/minipay/minipay-code-template (trunk)/Generator/RpcBridge'
+miniPay.codeGenerate.rpcGenerate.templateJsPath: '/Users/enixlee/Documents/paymini/minipay-code-template (trunk)/CodeTemplates/Rpc/SDKManage'
+miniPay.codeGenerate.rpcGenerate.exportJsApiUrlPath: '/Users/enixlee/Documents/paymini/manage-console/minipay-manage-console (trunk)/codeTemplate'
+miniPay.codeGenerate.rpcGenerate.templateVueRpcPath: '/Users/enixlee/Documents/paymini/minipay-code-template (trunk)/CodeTemplates/Rpc/Client'
+miniPay.codeGenerate.rpcGenerate.exportVueRpcPath: '/Users/enixlee/Documents/paymini/web-weixin-merchant (trunk)/WXMerchant/src/api/Template'
+miniPay.codeGenerate.rpcGenerate2.ConfigPath: /Users/zhipeng/Documents/Object/minipay/minipay-code-template-gitlab/CodeTemplates/conf
+miniPay.codeGenerate.rpcGenerate2.TemplatePath: /Users/zhipeng/Documents/Object/minipay/minipay-code-template-gitlab/CodeTemplates/Rpc
+miniPay.codeGenerate.rpcGenerate2.ExportPath: /Users/zhipeng/Documents/Object/minipay/minipay-code-template-gitlab/src/miniPayCenter/RpcCodeTemplates

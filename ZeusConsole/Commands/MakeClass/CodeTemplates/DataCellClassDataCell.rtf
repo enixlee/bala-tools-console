@@ -1,0 +1,32 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ parent }} as super;
+
+/**
+ * auto create by gameConsole!!
+ * sourceFile:
+ * Class {{ className }}
+ * @package {{ namespace }}
+ */
+class {{ className }} extends super
+{
+{{ dataCells }}
+
+    /**
+     * @inheritDoc
+     */
+    public function getVersion()
+    {
+        return 2;
+    }
+    /**
+     * 设置默认值
+     */
+    protected function initializeDefaultValues()
+    {
+        parent::initializeDefaultValues();
+{{ defaultValues }}
+    }
+}

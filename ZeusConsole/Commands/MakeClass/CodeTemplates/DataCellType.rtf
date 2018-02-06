@@ -1,0 +1,23 @@
+    /**
+     * {{ comment }}
+     *
+     * @var
+     */
+    const DBKey_{{ name }} = "{{ name }}";
+
+	/**
+	 * 获取 {{ comment }}
+	 * @return {{ type }}
+	 */
+	public function get_{{ name }}()
+	{
+		return $this->getdata ( self::DBKey_{{ name }} );
+	}
+
+    /**
+     * 设置 {{ comment }} 默认值
+     */
+    protected function _set_defaultvalue_{{ name }}()
+    {
+        $this->set_defaultkeyandvalue ( self::DBKey_{{ name }}, {{ defaultValue }} );
+    }

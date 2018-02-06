@@ -1,0 +1,12 @@
+<?php
+namespace service;
+use Common\Util\Common_Util_ReturnVar;
+
+class dbs_{{ className }} extends dbs_baseplayer{
+   const DBKey_tablename="{{ className }}";
+   function __construct(){
+       parent::__construct(self::DBKey_tablename);
+   }
+}
+
+?>

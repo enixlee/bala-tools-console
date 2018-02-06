@@ -1,0 +1,54 @@
+{
+  "name": "bala/tools-console",
+  "type": "library",
+  "keywords": [
+    "php",
+    "php-schedule",
+    "php-cron"
+  ],
+  "description": "miniPay Rpc tools console",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "peng.zhi",
+      "email": "babety@163.com",
+      "role": "Developer"
+    }
+  ],
+  "bin": [
+    "zeus"
+  ],
+  "autoload": {
+    "psr-4": {
+      "ZeusConsole\\": "ZeusConsole"
+    },
+    "files": [
+      "Helper.php"
+    ]
+  },
+  "require": {
+    "symfony/console": "3.2.*",
+    "symfony/yaml": "3.2.*",
+    "symfony/stopwatch": "3.2.*",
+    "symfony/class-loader": "3.2.*",
+    "symfony/event-dispatcher": "3.2.*",
+    "monolog/monolog": "*",
+    "symfony/dependency-injection": "3.2.*",
+    "symfony/config": "3.2.*",
+    "symfony/http-kernel": "3.2.*",
+    "symfony/proxy-manager-bridge": "3.2.*",
+    "symfony/process": "3.2.*",
+    "symfony/validator": "3.2.*",
+    "parsecsv/php-parsecsv": "^0.4.5",
+    "brandonwamboldt/utilphp": "^1.1",
+    "qiniu/php-sdk": "^7.0",
+    "symfony/finder": "3.1.*",
+    "rodneyrehm/plist": "^2.0",
+    "nikic/php-parser": "^1.4",
+    "koesie10/lua-serializer": "^0.1.0",
+    "symfony/serializer": "3.2.*",
+    "symfony/templating": "3.2.*",
+    "symfony/property-access": "3.2.*",
+    "nesbot/carbon": "^1.21"
+  }
+}

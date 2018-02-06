@@ -1,0 +1,45 @@
+    /**
+     * {{ comment }}
+     *
+     * @var
+     */
+    const DBKey_{{ name }} = "{{ name }}";
+
+	/**
+	 * 获取 {{ comment }}
+	 * @return {{ type }}
+	 */
+	{{ get_accessor }} function get_{{ name }}()
+	{
+		return $this->getdata ( self::DBKey_{{ name }} );
+	}
+
+	/**
+	 * 设置 {{ comment }}
+	 *
+	 * @param {{ type }} $value
+	 * @return $this
+	 */
+	{{ set_accessor }} function set_{{ name }}($value)
+	{
+		$this->setdata ( self::DBKey_{{ name }}, {{ valueconvert }} );
+		return $this;
+	}
+
+	/**
+     * 重置 {{ comment }}
+     * 设置为 {{ defaultValue }}
+     * @return $this
+     */
+    {{ reset_accessor }} function reset_{{ name }}()
+    {
+        return $this->reset_defaultValue(self::DBKey_{{ name }});
+    }
+
+    /**
+     * 设置 {{ comment }} 默认值
+     */
+    protected function _set_defaultvalue_{{ name }}()
+    {
+        $this->set_defaultkeyandvalue ( self::DBKey_{{ name }}, {{ defaultValue }} );
+    }

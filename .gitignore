@@ -1,0 +1,12 @@
+# Created by .ignore support plugin (hsz.mobi)
+/composer.lock
+/vendor/
+/Caches/*
+/bin/Caches/*
+/bin/configs/*
+/tmp/
+/.idea
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
