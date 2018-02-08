@@ -18,10 +18,6 @@ use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Parameter\ParameterTy
 
 class RpcGenerateClass2
 {
-    /**
-     * 命名空间前缀
-     */
-    const NAMESPACE_PREFIX = "Logic";
 
     private $nameSpace;
     private $className;
@@ -100,7 +96,7 @@ class RpcGenerateClass2
      */
     public function setNameSpace($nameSpace)
     {
-        $this->nameSpace = self::NAMESPACE_PREFIX . $nameSpace;
+        $this->nameSpace = $nameSpace;
     }
 
 
@@ -391,6 +387,23 @@ class RpcGenerateClass2
     }
 
     /**
+     * @param $exportPath
+     * @param $namespace
+     * @param null $fileName
+     * @return string
+     */
+    protected function getExportPath($exportPath, $namespace, $fileName = null)
+    {
+        //RPC的命名空间
+        $subNamespace = $namespace;
+        $filePath = $exportPath . DIRECTORY_SEPARATOR . $subNamespace . DIRECTORY_SEPARATOR;
+        if (!is_null($fileName)) {
+            $filePath = $filePath . $fileName;
+        }
+        return $filePath;
+    }
+
+    /**
      * @param string $exportPath
      * @param PhpEngine $template
      * @param Filesystem $fs
@@ -400,12 +413,14 @@ class RpcGenerateClass2
      */
     public function dumpRPCLogicFiles(string $exportPath, PhpEngine $template, Filesystem $fs, OutputInterface $output, $isDebug = false)
     {
-        $exportPath = $exportPath . DIRECTORY_SEPARATOR . "RPC";
+        //RPC的命名空间
+        $subNamespace = "RPC";
+//        $filePath =  $exportPath . DIRECTORY_SEPARATOR . $subNamespace . DIRECTORY_SEPARATOR . $this->getClassName() . ".php";
+        $filePath = $this->getExportPath($exportPath, "RPC", $this->getClassName() . ".php");
         $renderTemplate = $template->render("LogicTemplates.php", [
             'generateClass' => $this,
         ]);
-        $relativeExportPath = $this->getNameSpace() . DIRECTORY_SEPARATOR;
-        $filePath = $exportPath . DIRECTORY_SEPARATOR . $relativeExportPath . $this->getClassName() . ".php";
+
 
         if ($isDebug) {
             $output->writeln("Generator Rpc:$filePath");
@@ -428,9 +443,9 @@ class RpcGenerateClass2
             return false;
         }
 
-
-        $exportPath = $exportPath . DIRECTORY_SEPARATOR . "RPC" . DIRECTORY_SEPARATOR . $this->getNameSpace() . DIRECTORY_SEPARATOR;
-
+        //RPC的命名空间
+        $subNamespace = "RPC";
+        $exportPath = $this->getExportPath($exportPath, $subNamespace);
 
         $writeParameter = $this->returnParameters;
 //        生成返回值中的message
@@ -532,12 +547,11 @@ class RpcGenerateClass2
      */
     public function dumpUnitTestFiles(string $exportPath, PhpEngine $template, Filesystem $fs, OutputInterface $output, $isDebug = false)
     {
-        $exportPath = $exportPath . DIRECTORY_SEPARATOR . "Tests";
+
+        $filePath = $this->getExportPath($exportPath, "Tests", $this->getClassTestName() . ".php");
         $renderTemplate = $template->render("LogicTestTemplates.php", [
             'generateClass' => $this,
         ]);
-        $relativeExportPath = $this->getNameSpace() . DIRECTORY_SEPARATOR;
-        $filePath = $exportPath . DIRECTORY_SEPARATOR . $relativeExportPath . $this->getClassTestName() . ".php";
 
         if ($isDebug) {
             $output->writeln("Generator Test Unit:$filePath");
@@ -559,12 +573,13 @@ class RpcGenerateClass2
         if (empty($this->errorCodes)) {
             return false;
         }
-        $exportPath = $exportPath . DIRECTORY_SEPARATOR . "Errors";
+        $filePath = $this->getExportPath($exportPath, "Errors", "Error" . $this->getClassName() . ".php");
+//        $exportPath = $exportPath . DIRECTORY_SEPARATOR . "Errors";
         $renderTemplate = $template->render("LogicErrorTemplates.php", [
             'generateClass' => $this,
         ]);
-        $relativeExportPath = $this->getNameSpace() . DIRECTORY_SEPARATOR;
-        $filePath = $exportPath . DIRECTORY_SEPARATOR . $relativeExportPath . "Error" . $this->getClassName() . ".php";
+//        $relativeExportPath = $this->getNameSpace() . DIRECTORY_SEPARATOR;
+//        $filePath = $exportPath . DIRECTORY_SEPARATOR . $relativeExportPath . "Error" . $this->getClassName() . ".php";
 
         if ($isDebug) {
             $output->writeln("Generator Error Code Files:$filePath");

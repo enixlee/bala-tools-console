@@ -6,7 +6,7 @@
  * toolsVersion:<?php print getConfig('version')."\n"?>
  */
 
-namespace miniPayCenter\RpcCodeTemplates\RPC\<?php printf("%s",$generateClass->getNameSpace())  ?>;
+namespace <?php echo $generateClass->getNameSpace()?>\RPC;
 
 use Pluto\Foundation\Serializer\ObjectSerializerTrait;
 
@@ -15,7 +15,7 @@ use Pluto\Foundation\Serializer\ObjectSerializerTrait;
  * <?php echo $generateClass->getDescription() . "\n"?>
  * url:<?php echo $generateClass->getRouteUrl() . "\n"?>
  * <?php echo $generateClass->getRpcReturnParametersClassName() . "\n"?>
- * @package miniPayCenter\RpcCodeTemplates\RPC\<?php echo $generateClass->getNameSpace() . "\n"?>
+ * @package <?php echo $generateClass->getNameSpace()?>\RPC
  */
 class <?php printf($rpcOutputParameter->getMessageClassName()."\n") ?>
 {

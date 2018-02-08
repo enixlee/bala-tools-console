@@ -6,7 +6,7 @@
  * toolsVersion:<?php print getConfig('version')."\n"?>
  */
 
-namespace miniPayCenter\RpcCodeTemplates\RPC\<?php echo $generateClass->getNameSpace()?>;
+namespace <?php echo $generateClass->getNameSpace()?>\RPC;
 
 use Pluto\Foundation\RPC\Caller\RpcCallerParameter;
 use Pluto\Foundation\RPC\RPCCommandResult;
@@ -17,7 +17,7 @@ use Pluto\Foundation\RPC\RPCCommandResult;
  * <?php echo $generateClass->getDescription() . "\n"?>
  * url:<?php echo $generateClass->getRouteUrl() . "\n"?>
  * <?php echo $generateClass->getClassName() . "\n"?>
- * @package miniPayCenter\RpcCodeTemplates\RPC\<?php echo $generateClass->getNameSpace() . "\n"?>
+ * @package <?php echo $generateClass->getNameSpace()?>\RPC
  */
 trait <?php echo $generateClass->getClassName()."\n" ?>
 {

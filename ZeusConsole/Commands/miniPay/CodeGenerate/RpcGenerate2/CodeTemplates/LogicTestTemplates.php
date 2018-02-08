@@ -7,14 +7,14 @@
  */
 
 <?php $writer = new \ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\CodeTemplateWriters\LogicTestTemplatesWriter($generateClass)?>
-namespace miniPayCenter\RpcCodeTemplates\Tests\<?php echo $generateClass->getNameSpace()?>;
+namespace <?php echo $generateClass->getNameSpace()?>\Tests;
 use hellaEngine\support\Http\Http;
 use <?php print $writer->writeServiceReturn()?> as ServiceReturn;
-use miniPayCenter\TestUnit\Params\TestUnitParameter as TestUnitReturn;
+use plutoSupports\TestUnit\Params\TestUnitParameter as TestUnitReturn;
 
 /**
  * Class <?php echo $generateClass->getClassTestName()."\n" ?>
- * @package miniPayCenter\RpcCodeTemplates\Tests\<?php print $generateClass->getNameSpace() ."\n"?>
+ * @package <?php echo $generateClass->getNameSpace()?>\Tests
  */
 trait <?php echo $generateClass->getClassTestName()."\n" ?>
 {

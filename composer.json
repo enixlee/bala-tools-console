@@ -49,6 +49,7 @@
     "symfony/serializer": "3.2.*",
     "symfony/templating": "3.2.*",
     "symfony/property-access": "3.2.*",
-    "nesbot/carbon": "^1.21"
+    "nesbot/carbon": "^1.21",
+    "hella-engine/support": "~1.0"
   }
 }

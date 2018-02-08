@@ -6,16 +6,16 @@
  * toolsVersion:<?php print getConfig('version')."\n"?>
  */
 
-namespace miniPayCenter\RpcCodeTemplates\Errors\<?php echo $generateClass->getNameSpace()?>;
+namespace <?php echo $generateClass->getNameSpace()?>\Errors;
 
-use miniPayCenter\Supports\Errors\ErrorBase;
+use bala\codeTemplate\Supports\Errors\ErrorBase;
 
 /**
  *
  * <?php echo $generateClass->getDescription() . "\n"?>
  * url:<?php echo $generateClass->getRouteUrl() . "\n"?>
  * <?php echo $generateClass->getClassName() . "\n"?>
- * @package miniPayCenter\RpcCodeTemplates\Errors\<?php echo $generateClass->getNameSpace() ."\n"?>
+ * @package <?php echo $generateClass->getNameSpace()?>\Errors
  */
 interface Error<?php echo $generateClass->getClassName()." extends ErrorBase\n" ?>
 {

@@ -22,6 +22,7 @@ use Symfony\Component\Templating\TemplateNameParser;
 use Symfony\Component\Yaml\Yaml;
 use ZeusConsole\Commands\CommandBase;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate\Exceptions\RpcGenerateParserError;
+use ZeusConsole\Commands\System\dumpConfig;
 use ZeusConsole\Utils\utils;
 
 class RpcGenerate2 extends CommandBase
@@ -77,6 +78,16 @@ class RpcGenerate2 extends CommandBase
             $path = utils::getTempDirectoryPath() . 'ExportPath';
         }
         return $path;
+    }
+
+    /**
+     * 获取导出的命名空间
+     * @return string
+     */
+    protected function getExportNameSpace()
+    {
+        $nameSpace = getConfig('miniPay.codeGenerate.rpcGenerate2.NameSpace', "bala\codeTemplate");
+        return rtrim($nameSpace);
     }
 
 
@@ -176,9 +187,17 @@ class RpcGenerate2 extends CommandBase
         $ClassNameParts = array_map("ucfirst", $ClassNameParts);
 
         $ClassName = "Logic" . join("", $ClassNameParts) . ucfirst($file->getBasename(".yaml"));
-        $GenerateClass->setNameSpace($ClassNameParts[0]);
+        //yaml第一个文件夹,为命名空间
+        $nameSpace = $this->getExportNameSpace() . "\\Logic" . $ClassNameParts[0];
+        $functionName = ucfirst($file->getBasename(".yaml"));
+
+
+//        var_dump($nameSpace);
+//        var_dump($functionName);
+
+        $GenerateClass->setNameSpace($nameSpace);
         $GenerateClass->setClassName($ClassName);
-        $GenerateClass->setFunctionName(ucfirst($file->getBasename(".yaml")));
+        $GenerateClass->setFunctionName($functionName);
 
         try {
             $GenerateClass->fromArray($yamlContent);
@@ -190,19 +209,26 @@ class RpcGenerate2 extends CommandBase
             return false;
         }
 
+        //导出路径增加命名空间
+        $nameSpaceExportPath = $this->exportPath . DIRECTORY_SEPARATOR .
+            str_replace("\\", DIRECTORY_SEPARATOR, $nameSpace);
+//        dumpLine($nameSpaceExportPath);
         $fs = new Filesystem();
 
         //生成RPC服务代码
-        $GenerateClass->dumpRPCLogicFiles($this->exportPath, $template, $fs, $output, $this->isVerboseDebug());
+        $GenerateClass->dumpRPCLogicFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
+
+
         //生成返回值
-        $GenerateClass->dumpReturnParameterFiles($this->exportPath, $template, $fs, $output, $this->isVerboseDebug());
+        $GenerateClass->dumpReturnParameterFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
+
         //生产测试用例代码
-        $GenerateClass->dumpUnitTestFiles($this->exportPath, $template, $fs, $output, $this->isVerboseDebug());
+        $GenerateClass->dumpUnitTestFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
 
         //生成Bridge 代码
-        $GenerateClass->dumpRpcBridgeFiles($this->exportPath, $template, $fs, $output, $this->isVerboseDebug());
+//        $GenerateClass->dumpRpcBridgeFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
         //错误Code
-        $GenerateClass->dumpErrorCodeFiles($this->exportPath, $template, $fs, $output, $this->isVerboseDebug());
+        $GenerateClass->dumpErrorCodeFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
         return true;
 
 

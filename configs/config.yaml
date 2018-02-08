@@ -16,3 +16,4 @@ miniPay.codeGenerate.rpcGenerate.exportVueRpcPath: '/Users/enixlee/Documents/pay
 miniPay.codeGenerate.rpcGenerate2.ConfigPath: /Users/zhipeng/Documents/Object/minipay/minipay-code-template-gitlab/CodeTemplates/conf
 miniPay.codeGenerate.rpcGenerate2.TemplatePath: /Users/zhipeng/Documents/Object/minipay/minipay-code-template-gitlab/CodeTemplates/Rpc
 miniPay.codeGenerate.rpcGenerate2.ExportPath: /Users/zhipeng/Documents/Object/minipay/minipay-code-template-gitlab/src/miniPayCenter/RpcCodeTemplates
+miniPay.codeGenerate.rpcGenerate2.NameSpace: bala\codeTemplate

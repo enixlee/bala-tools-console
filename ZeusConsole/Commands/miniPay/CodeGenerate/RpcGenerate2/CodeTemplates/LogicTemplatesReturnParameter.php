@@ -6,17 +6,17 @@
  * toolsVersion:<?php print getConfig('version')."\n"?>
  */
 
-namespace miniPayCenter\RpcCodeTemplates\RPC\<?php echo $generateClass->getNameSpace()  ?>;
+namespace <?php echo $generateClass->getNameSpace()?>\RPC;
 
 use Pluto\Foundation\Serializer\ObjectSerializerTrait;
-use miniPayCenter\Supports\CodeTemplate\ReturnParameterSerializerTrait;
+use bala\codeTemplate\Supports\CodeTemplate\ReturnParameterSerializerTrait;
 
 /**
  *
  * <?php echo $generateClass->getDescription() . "\n"?>
  * url:<?php echo $generateClass->getRouteUrl() . "\n"?>
  * <?php echo $generateClass->getRpcReturnParametersClassName() . "\n"?>
- * @package miniPayCenter\RpcCodeTemplates\RPC\<?php echo $generateClass->getNameSpace() . "\n"?>
+ * @package <?php echo $generateClass->getNameSpace()?>\RPC
  */
 class <?php echo $generateClass->getRpcReturnParametersClassName()."\n" ?>
 {
