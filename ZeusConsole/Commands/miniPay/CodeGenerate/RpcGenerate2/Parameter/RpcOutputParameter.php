@@ -188,6 +188,8 @@ class RpcOutputParameter extends ParameterBase
             }
         } elseif ($this->isMessage()) {
             $declare = $this->getMessageClassName();
+        } elseif ($declare == "mixed") {
+            $declare = "";
         }
         return $declare;
     }

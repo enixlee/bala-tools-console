@@ -76,4 +76,56 @@ EOF;
             $param->getName(),
             $param->getName());
     }
+
+    public function writeSetFunction()
+    {
+        $param = $this->param;
+        $formatNormal = <<<EOF
+    /**
+     * @param %comment% \$%name%
+     */
+    public function set%FunctionName%(%type% \$%name% = null)
+    {
+        \$this->%name% = \$%name%;
+    }
+EOF;
+
+        $formatMessage = <<<EOF
+    /**
+     * @param %comment% \$%name%
+     */
+    public function set%FunctionName%($%name% = null)
+    {
+        \$this->%name% = \$%name%;
+    }
+EOF;
+        $formatMessageNotRepeat = <<<EOF
+    /**
+     * @param %comment% \$%name%
+     */
+    public function set%FunctionName%(\$%name% = null)
+    {
+        if (is_array(\$%name%)) {
+            \$%name% = %type%::formArray($%name%);
+        }
+        \$this->%name% = \$%name%;
+    }
+EOF;
+        $setData = [
+            "%comment%" => $param->getVariableCommentString(),
+            "%FunctionName%" => $param->getFunctionName(),
+            "%type%" => $param->getTypeDeclareAsString(),
+            "%name%" => $param->getName()
+        ];
+
+        if ($param->isMessage() && !$param->isRepeated()) {
+            $message = translator()->trans($formatMessageNotRepeat, $setData);
+        } else if ($param->isMessage() && $param->isRepeated()) {
+            $message = translator()->trans($formatMessage, $setData);
+        } else {
+            $message = translator()->trans($formatNormal, $setData);
+        }
+
+        return $message;
+    }
 }
