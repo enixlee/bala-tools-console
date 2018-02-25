@@ -81,7 +81,7 @@ if($generateClass->isDeprecated())
 <?php $declare = $generateClass->getParameterDeclares();echo join(",\n",$declare);?>
 )
     {
-        return $this->callFunction(self::$<?php echo $generateClass->getClassName()?>RpcFunctionName,
+        return $this->callLogicFunction(self::$<?php echo $generateClass->getClassName()?>RpcFunctionName,
             [
 <?php $declare = $generateClass->getParameterAsArrayWithParameterVar();echo join(",\n",$declare)."\n"; ?>
             ]);
