@@ -2,6 +2,10 @@
 #   更新记录
 
 #   new Features/dev-master
+-   3.3.0
+    -   发布日期:2018年02月25日
+    -   更新内容:
+        -   修改逻辑模板代码函数 callFunction=>callLogicFunction
 -   3.2.0
     -   发布日期:2018年02月25日
     -   更新内容:
