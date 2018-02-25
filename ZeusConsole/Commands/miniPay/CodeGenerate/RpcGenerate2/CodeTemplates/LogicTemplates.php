@@ -77,9 +77,15 @@ if($generateClass->isDeprecated())
 <?php $declare = $generateClass->getParameterDocuments();echo join("\n",$declare); echo "\n"?>
      * @return RPCCommandResult
      */
-    abstract protected function Do<?php echo $generateClass->getFunctionName()?>(
+    protected function Do<?php echo $generateClass->getFunctionName()?>(
 <?php $declare = $generateClass->getParameterDeclares();echo join(",\n",$declare);?>
-);
+)
+    {
+        return $this->callFunction(self::$<?php echo $generateClass->getClassName()?>RpcFunctionName,
+            [
+<?php $declare = $generateClass->getParameterAsArrayWithParameterVar();echo join(",\n",$declare)."\n"; ?>
+            ]);
+    }
 
 
     /**
