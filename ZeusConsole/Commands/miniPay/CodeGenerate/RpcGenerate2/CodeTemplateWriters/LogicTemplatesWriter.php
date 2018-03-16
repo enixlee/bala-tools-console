@@ -21,4 +21,39 @@ class LogicTemplatesWriter extends WriterBase
         }
         return $returnParams;
     }
+
+    function writeOptions()
+    {
+        $options = $this->generateClass->getOptions();
+        $format = "\"%key%\" => \"%value%\",";
+
+        $values = "";
+        foreach ($options as $key => $value) {
+
+            $values .= translator()->trans($format,
+                [
+                    "%key%" => $key,
+                    "%value%" => strval($value)
+                ]);
+        }
+
+
+        $format = <<<EOF
+    /**
+     * @var array
+     */
+    public static \$%name%Options = [
+        %values%
+    ];
+EOF;
+
+        $content = translator()->trans($format,
+            [
+                "%name%" => $this->generateClass->getClassName(),
+                "%values%" => $values
+            ]);
+
+        return $content;
+
+    }
 }

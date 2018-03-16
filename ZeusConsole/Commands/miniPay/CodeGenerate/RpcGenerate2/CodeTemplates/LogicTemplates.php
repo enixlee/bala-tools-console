@@ -40,6 +40,8 @@ trait <?php echo $generateClass->getClassName()."\n" ?>
 <?php $declare = $writer->getStaticParameters();echo join("\n",$declare)."\n"; ?>
     ];
 
+<?php echo $writer->writeOptions()?>
+
     /**
      * <?php echo $generateClass->getDescription() . "\n"?>
 <?php

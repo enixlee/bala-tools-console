@@ -384,6 +384,32 @@ class RpcGenerateClass2
                 $this->returnParameters[] = $ins;
             }
         }
+
+        //处理options
+
+        $this->options = $arr['options'] ?? [];
+
+    }
+
+    protected $options = [];
+
+    /**
+     * 获取扩展项
+     * @param $key
+     * @param null $default
+     * @return mixed|null
+     */
+    public function getOption($key, $default = null)
+    {
+        return $this->options[$key] ?? $default;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 
     /**
