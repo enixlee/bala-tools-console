@@ -22,6 +22,23 @@ class LogicTemplatesWriter extends WriterBase
         return $returnParams;
     }
 
+
+    /**
+     * @return string
+     */
+    function writeUseDocument()
+    {
+        $format = <<<EOF
+use Pluto\Foundation\RPC\Caller\RpcCallerParameter;
+use Pluto\Foundation\RPC\RPCCommandResult;
+EOF;
+        if ($this->generateClass->getRpcTypeConfig('isXicService', false)) {
+            $format .= "\nuse Pluto\Foundation\XicService\XicCaller;\n";
+        }
+
+        return $format;
+    }
+
     function writeOptions()
     {
         $options = $this->generateClass->getOptions();
@@ -55,5 +72,27 @@ EOF;
 
         return $content;
 
+    }
+
+    function writeWithParameters()
+    {
+        $format = <<<EOF
+        \$parameter->setOption(XicCaller::OPTION_SERVER_NAME, "%serviceName%");
+        \$parameter->setCaller(app(XicCaller::class));
+
+EOF;
+
+        $content = "";
+        if ($this->generateClass->getRpcTypeConfig('isXicService', false)) {
+            $name = $this->generateClass->getRpcTypeConfig('name');
+            $serviceName = $this->generateClass->getRpcTypeConfig('serviceName', $name);
+            $content = translator()->trans($format,
+                [
+                    "%serviceName%" => $serviceName
+                ]);
+
+
+        }
+        return $content;
     }
 }

@@ -8,10 +8,9 @@
 
 namespace <?php echo $generateClass->getNameSpace()?>\RPC;
 
-use Pluto\Foundation\RPC\Caller\RpcCallerParameter;
-use Pluto\Foundation\RPC\RPCCommandResult;
-
 <?php $writer = new \ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\CodeTemplateWriters\LogicTemplatesWriter($generateClass)?>
+<?php echo $writer->writeUseDocument()?>
+
 /**
  *
  * <?php echo $generateClass->getDescription() . "\n"?>
@@ -117,6 +116,7 @@ if($generateClass->isDeprecated())
             [
 <?php $declare = $generateClass->getParameterAsArrayWithParameterVar();echo join(",\n",$declare)."\n"; ?>
             ]);
+<?php echo $writer->writeWithParameters()?>
         return $parameter;
     }
 

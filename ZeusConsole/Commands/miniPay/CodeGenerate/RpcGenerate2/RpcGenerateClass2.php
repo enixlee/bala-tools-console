@@ -239,12 +239,18 @@ class RpcGenerateClass2
     }
 
     /**
-     * Rpc类型配置
+     * 获取Rpc类型配置
+     * @param null $key
+     * @param null $default
      * @return array|null
      */
-    public function getRpcTypeConfig()
+    public function getRpcTypeConfig($key = null, $default = null)
     {
-        return $this->generatorConfig->getRpcTypeConfig($this->rpcType);
+        $config = $this->generatorConfig->getRpcTypeConfig($this->rpcType);
+        if (is_null($config) || is_null($key)) {
+            return $config;
+        }
+        return $config[$key] ?? $default;
     }
 
 
@@ -439,6 +445,8 @@ class RpcGenerateClass2
      */
     public function dumpRPCLogicFiles(string $exportPath, PhpEngine $template, Filesystem $fs, OutputInterface $output, $isDebug = false)
     {
+
+        dumpLine($this->getRpcTypeConfig());
         //RPC的命名空间
         $subNamespace = "RPC";
 //        $filePath =  $exportPath . DIRECTORY_SEPARATOR . $subNamespace . DIRECTORY_SEPARATOR . $this->getClassName() . ".php";
