@@ -446,9 +446,8 @@ class RpcGenerateClass2
     public function dumpRPCLogicFiles(string $exportPath, PhpEngine $template, Filesystem $fs, OutputInterface $output, $isDebug = false)
     {
 
-        dumpLine($this->getRpcTypeConfig());
         //RPC的命名空间
-        $subNamespace = "RPC";
+//        $subNamespace = "RPC";
 //        $filePath =  $exportPath . DIRECTORY_SEPARATOR . $subNamespace . DIRECTORY_SEPARATOR . $this->getClassName() . ".php";
         $filePath = $this->getExportPath($exportPath, "RPC", $this->getClassName() . ".php");
         $renderTemplate = $template->render("LogicTemplates.php", [
