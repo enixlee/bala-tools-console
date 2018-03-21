@@ -22,7 +22,7 @@ use Symfony\Component\Templating\TemplateNameParser;
 use Symfony\Component\Yaml\Yaml;
 use ZeusConsole\Commands\CommandBase;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate\Exceptions\RpcGenerateParserError;
-use ZeusConsole\Commands\System\dumpConfig;
+use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\DB\DBGenerator;
 use ZeusConsole\Utils\utils;
 
 class RpcGenerate2 extends CommandBase
@@ -46,7 +46,7 @@ class RpcGenerate2 extends CommandBase
     /**
      * 获取文件数据模板路径
      */
-    private function getTemplatePath()
+    public function getTemplatePath()
     {
         $path = getConfig('miniPay.codeGenerate.rpcGenerate2.TemplatePath');
         if (empty($path)) {
@@ -58,7 +58,7 @@ class RpcGenerate2 extends CommandBase
     /**
      * 获取文件数据模板路径
      */
-    private function getGenerateConfPath()
+    public function getGenerateConfPath()
     {
         $path = getConfig('miniPay.codeGenerate.rpcGenerate2.ConfigPath');
         if (empty($path)) {
@@ -71,7 +71,7 @@ class RpcGenerate2 extends CommandBase
      * 获取导出路径
      * @return array|null|string
      */
-    private function getExportPath()
+    public function getExportPath()
     {
         $path = getConfig('miniPay.codeGenerate.rpcGenerate2.ExportPath');
         if (empty($path)) {
@@ -84,7 +84,7 @@ class RpcGenerate2 extends CommandBase
      * 获取导出的命名空间
      * @return string
      */
-    protected function getExportNameSpace()
+    public function getExportNameSpace()
     {
         $nameSpace = getConfig('miniPay.codeGenerate.rpcGenerate2.NameSpace', "bala\codeTemplate");
         return rtrim($nameSpace);
@@ -92,6 +92,8 @@ class RpcGenerate2 extends CommandBase
 
 
     private $exportPath;
+
+
     private $errorMsg = [];
     /**
      * 导出配置
@@ -99,6 +101,17 @@ class RpcGenerate2 extends CommandBase
     private $exportConfig;
 
     protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->generateRpc($input, $output);
+
+
+        $dbGenerator = new DBGenerator();
+        $dbGenerator->setMainClass($this);
+        $dbGenerator->generate($input, $output);
+
+    }
+
+    protected function generateRpc(InputInterface $input, OutputInterface $output)
     {
         $templatePath = $input->getOption('templatePath');
         $this->exportPath = $input->getOption('exportPath');
@@ -159,6 +172,7 @@ class RpcGenerate2 extends CommandBase
             $output->writeln("<error>错误:$errorCount 个</error>");
         }
     }
+
 
     /**
      * 生成代码
