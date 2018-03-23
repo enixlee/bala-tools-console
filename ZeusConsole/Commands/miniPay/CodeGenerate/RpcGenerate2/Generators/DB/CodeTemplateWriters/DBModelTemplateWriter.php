@@ -12,6 +12,12 @@ namespace ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\DB\C
 class DBModelTemplateWriter extends WriterBase
 {
 
+    protected $ignoreColumns = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'luck_version',
+    ];
     protected $casts = [
         "int" => 'int',
         "integer" => 'integer',
@@ -54,6 +60,10 @@ EOF;
         $columns = $this->generateClass->getTable()->getColumns();
         $castString = "";
         foreach ($columns as $column) {
+
+            if (in_array($column->getName(), $this->ignoreColumns)) {
+                continue;
+            }
             $castString .= translator()->trans($formatProperty,
                 [
                     "%keyName%" => $column->getName(),
@@ -102,6 +112,10 @@ EOF;
 
         $castString = "";
         foreach ($columns as $column) {
+
+            if (in_array($column->getName(), $this->ignoreColumns)) {
+                continue;
+            }
             if (isset($this->casts[strtolower($column->getDateType())])) {
                 $castString .= $this->format_tab_2 . "'" . $column->getName() . "' => ModelDataType::" . $this->casts[strtolower($column->getDateType())] . ",\n";
             }
