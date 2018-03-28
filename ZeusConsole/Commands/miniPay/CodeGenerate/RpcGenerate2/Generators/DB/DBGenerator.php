@@ -68,9 +68,9 @@ class DBGenerator
 
 //        $exportPath = $this->getMainClass()->getExportPath();
         //清理目标路径
-        $fs = new Filesystem();
-        $fs->remove($this->exportPath);
-        $fs->mkdir($this->exportPath);
+//        $fs = new Filesystem();
+//        $fs->remove($this->exportPath);
+//        $fs->mkdir($this->exportPath);
 
 
 //        //加载导出配置
@@ -85,14 +85,14 @@ class DBGenerator
 
         ]);
 
-        if ($this->getMainClass()->isVerboseDebug()) {
-            $output->writeln([
-                'form:',
-                $templatePath,
-                'to:',
-                $this->exportPath
-            ]);
-        }
+//        if ($this->getMainClass()->isVerboseDebug()) {
+//            $output->writeln([
+//                'form:',
+//                $templatePath,
+//                'to:',
+//                $this->exportPath
+//            ]);
+//        }
 
 
         $fileCount = 0;
