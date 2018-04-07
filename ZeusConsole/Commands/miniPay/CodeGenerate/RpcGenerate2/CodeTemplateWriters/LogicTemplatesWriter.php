@@ -84,15 +84,22 @@ EOF;
 
         $content = "";
         if ($this->generateClass->getRpcTypeConfig('isXicService', false)) {
-            $name = $this->generateClass->getRpcTypeConfig('name');
-            $serviceName = $this->generateClass->getRpcTypeConfig('serviceName', $name);
+//            $name = $this->generateClass->getRpcTypeConfig('name');
+//            $serviceName = $this->generateClass->getRpcTypeConfig('serviceName', $name);
             $content = translator()->trans($format,
                 [
-                    "%serviceName%" => $serviceName
+                    "%serviceName%" => $this->getXicServiceName()
                 ]);
 
 
         }
         return $content;
+    }
+
+    function getXicServiceName()
+    {
+        $name = $this->generateClass->getRpcTypeConfig('name');
+        $serviceName = $this->generateClass->getRpcTypeConfig('serviceName', $name);
+        return $serviceName;
     }
 }

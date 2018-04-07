@@ -33,6 +33,10 @@ trait <?php echo $generateClass->getClassName()."\n" ?>
      */
     public static $<?php echo $generateClass->getClassName()?>RpcType = '<?php echo $generateClass->getRpcType()?>';
     /**
+     * @var string
+     */
+    public static $<?php echo $generateClass->getClassName()?>XicServiceName = '<?php echo $writer->getXicServiceName()?>';
+    /**
      * @var array
      */
     public static $<?php echo $generateClass->getClassName()?>Parameters = [
