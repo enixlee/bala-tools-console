@@ -242,7 +242,7 @@ class RpcGenerateClass2
      * 获取Rpc类型配置
      * @param null $key
      * @param null $default
-     * @return array|null
+     * @return array|null|string
      */
     public function getRpcTypeConfig($key = null, $default = null)
     {

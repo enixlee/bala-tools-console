@@ -37,6 +37,10 @@ trait <?php echo $generateClass->getClassName()."\n" ?>
      */
     public static $<?php echo $generateClass->getClassName()?>XicServiceName = '<?php echo $writer->getXicServiceName()?>';
     /**
+     * @var string
+     */
+    public static $<?php echo $generateClass->getClassName()?>XicServiceUrl = '<?php echo $writer->getXicServiceUrl()?>';
+    /**
      * @var array
      */
     public static $<?php echo $generateClass->getClassName()?>Parameters = [

@@ -9,6 +9,8 @@
 namespace ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\CodeTemplateWriters;
 
 
+use Pluto\Foundation\XicService\XicUrl;
+
 class LogicTemplatesWriter extends WriterBase
 {
     function getStaticParameters()
@@ -96,10 +98,29 @@ EOF;
         return $content;
     }
 
+    /**
+     * @return string
+     */
     function getXicServiceName()
     {
         $name = $this->generateClass->getRpcTypeConfig('name');
         $serviceName = $this->generateClass->getRpcTypeConfig('serviceName', $name);
         return $serviceName;
+    }
+
+
+    function getXicServiceUrl()
+    {
+        $xicUrl = new XicUrl();
+        $xicUrl->setServiceName($this->getXicServiceName());
+        $xicUrl->setFunctionName($this->generateClass->getRouteUrl());
+        $parameterParts = [];
+        $parameters = $this->generateClass->getParameters();
+        foreach ($parameters as $parameter) {
+            $parameterParts[] = $parameter->getName() . '^' . intval($parameter->isRequire());
+        }
+        $xicUrl->setParameterUrl(join("+", $parameterParts));
+
+        return $xicUrl->fullUrl(true);
     }
 }

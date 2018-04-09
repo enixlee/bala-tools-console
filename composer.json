@@ -51,6 +51,7 @@
     "symfony/property-access": "3.2.*",
     "nesbot/carbon": "^1.21",
     "hella-engine/support": "~1.0",
-    "greenlion/php-sql-parser": "^4.1"
+    "greenlion/php-sql-parser": "^4.1",
+    "pluto/core":"~2.0"
   }
 }
