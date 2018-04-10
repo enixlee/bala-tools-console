@@ -121,6 +121,6 @@ EOF;
         }
         $xicUrl->setParameterUrl(join("+", $parameterParts));
 
-        return $xicUrl->fullUrl(true);
+        return $xicUrl->toXicUrl(true);
     }
 }
