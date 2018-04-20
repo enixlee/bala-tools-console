@@ -203,8 +203,8 @@ abstract class ParameterBase
         $this->max = isset($this->originData['max']) ? $this->originData['max'] : null;
         $this->choice = isset($this->originData['choice']) ? $this->originData['choice'] : null;
         $this->default = isset($this->originData['default']) ? $this->originData['default'] : null;
-        $this->require = isset($this->originData['require']) ? $this->originData['require'] : null;
-        $this->comment = isset($this->originData['comment']) ? $this->originData['comment'] : null;
+        $this->require = isset($this->originData['require']) ? $this->originData['require'] : false;
+        $this->comment = isset($this->originData['comment']) ? $this->originData['comment'] : "";
     }
 
 

@@ -139,6 +139,16 @@ class RpcOutputParameter extends ParameterBase
         return $this->getType() == 'message';
     }
 
+    protected const OBJ_PREFIX = "obj.";
+
+    /**
+     * @return bool
+     */
+    public function isObject()
+    {
+        return starts_with($this->getType(), self::OBJ_PREFIX);
+    }
+
     /**
      * @var string
      */
@@ -177,15 +187,28 @@ class RpcOutputParameter extends ParameterBase
 
     }
 
+    /**
+     * @return string
+     */
+    public function getObjectType()
+    {
+        $nameSpace = getConfig('miniPay.codeGenerate.rpcGenerate2.NameSpace', "bala\codeTemplate");
+        return "\\" . $nameSpace . "\\objects\\" . str_replace_first(self::OBJ_PREFIX, "", $this->getType());
+    }
+
     public function getTypeDeclareAsString()
     {
         $declare = parent::getTypeDeclareAsString();
         if ($this->isRepeated()) {
             if ($this->isMessage()) {
                 $declare = $this->getMessageClassName() . "[]";
+            } elseif ($this->isObject()) {
+                $declare = $this->getObjectType() . "[]";
             } else {
                 $declare = "array";
             }
+        } elseif ($this->isObject()) {
+            $declare = $this->getObjectType();
         } elseif ($this->isMessage()) {
             $declare = $this->getMessageClassName();
         } elseif ($declare == "mixed") {
@@ -200,11 +223,15 @@ class RpcOutputParameter extends ParameterBase
         if ($this->isRepeated()) {
             if ($this->isMessage()) {
                 $declare = $this->getMessageClassName() . "[]";
+            } elseif ($this->isObject()) {
+                $declare = $this->getObjectType() . "[]";
             } else {
                 $declare = $declare . "[]";
             }
         } elseif ($this->isMessage()) {
             $declare = $this->getMessageClassName();
+        } elseif ($this->isObject()) {
+            $declare = $this->getObjectType();
         }
         return $declare;
     }

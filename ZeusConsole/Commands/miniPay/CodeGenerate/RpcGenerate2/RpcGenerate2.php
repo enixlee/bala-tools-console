@@ -22,10 +22,12 @@ use Symfony\Component\Templating\TemplateNameParser;
 use Symfony\Component\Yaml\Yaml;
 use ZeusConsole\Commands\CommandBase;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate\Exceptions\RpcGenerateParserError;
+use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\Base\GeneratorClass;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\DB\DBGenerator;
+use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\YAMLObject\YamlObjectGeneratorClass;
 use ZeusConsole\Utils\utils;
 
-class RpcGenerate2 extends CommandBase
+class RpcGenerate2 extends CommandBase implements GeneratorClass
 {
     protected function configure()
     {
@@ -152,21 +154,28 @@ class RpcGenerate2 extends CommandBase
 
         $fileCount = 0;
         $errorCount = 0;
+        $ignoreCount = 0;
         foreach ($iterator as $file) {
             if (!$file instanceof SplFileInfo) {
                 continue;
             }
 
 
-            if ($this->generateCode($file, $output)) {
+            $result = $this->generateCode($file, $output);
+            if ($result == self::ReturnSuccess) {
                 $fileCount++;
-            } else {
+            } elseif ($result == self::ReturnFailed) {
                 $errorCount++;
+            } elseif ($result == self::ReturnSuccess) {
+                $ignoreCount++;
             }
         }
 
 
         $output->writeln("<info>" . Carbon::now()->toDateTimeString() . "===>生成完毕,共生成RPC文件:$fileCount 个</info>");
+        if ($ignoreCount !== 0) {
+            $output->writeln("<info>忽略:$ignoreCount 个</info>");
+        }
         if ($errorCount !== 0) {
             $output->writeln($this->errorMsg);
             $output->writeln("<error>错误:$errorCount 个</error>");
@@ -185,15 +194,44 @@ class RpcGenerate2 extends CommandBase
      * 生成代码
      * @param SplFileInfo $file
      * @param OutputInterface $output
-     * @return false|string
+     * @return int 0失败,1成功,2忽略
      */
-    private function generateCode(SplFileInfo $file, OutputInterface $output)
+    public function generateCode(SplFileInfo $file, OutputInterface $output)
+    {
+        $yamlContent = Yaml::parse($file->getContents());
+
+        if (empty($yamlContent)) {
+            return self::ReturnFailed;
+        }
+
+        $yamlType = $yamlContent['yamlType'] ?? "rpc";
+
+
+        switch ($yamlType) {
+            case "rpc":
+                $result = $this->generateCodeYamlRpc($file, $output);
+                break;
+            case "object":
+                $result = $this->generateCodeYamlObject($file, $output);
+                break;
+            default:
+                $result = self::ReturnIgnore;
+                break;
+        }
+
+
+        return $result;
+
+
+    }
+
+    protected function generateCodeYamlRpc(SplFileInfo $file, OutputInterface $output)
     {
         $relativePath = $file->getRelativePath();
         $yamlContent = Yaml::parse($file->getContents());
 
         if (empty($yamlContent)) {
-            return false;
+            return self::ReturnSuccess;
         }
 
         $loader = new FilesystemLoader(__DIR__ . DIRECTORY_SEPARATOR . "CodeTemplates/%name%");
@@ -213,9 +251,6 @@ class RpcGenerate2 extends CommandBase
         $functionName = ucfirst($file->getBasename(".yaml"));
 
 
-//        var_dump($nameSpace);
-//        var_dump($functionName);
-
         $GenerateClass->setNameSpace($nameSpace);
         $GenerateClass->setClassName($ClassName);
         $GenerateClass->setFunctionName($functionName);
@@ -227,7 +262,7 @@ class RpcGenerate2 extends CommandBase
             $this->errorMsg[] = "<error>YAML解析错误:" . $file->getPathname() . " </error>";
             $this->errorMsg[] = "<error>错误信息 无效的类型或者字段:" . $e->getMessage() . "</error>";
 //            $output->writeln("<error>YAML解析错误:" . $file->getPathname() . "</error>");
-            return false;
+            return self::ReturnFailed;
         }
 
         //导出路径增加命名空间
@@ -238,20 +273,18 @@ class RpcGenerate2 extends CommandBase
 
         //生成RPC服务代码
         $GenerateClass->dumpRPCLogicFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
-
-
         //生成返回值
         $GenerateClass->dumpReturnParameterFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
-
         //生产测试用例代码
         $GenerateClass->dumpUnitTestFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
-
-        //生成Bridge 代码
-//        $GenerateClass->dumpRpcBridgeFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
         //错误Code
         $GenerateClass->dumpErrorCodeFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
-        return true;
+        return self::ReturnSuccess;
+    }
 
-
+    protected function generateCodeYamlObject(SplFileInfo $file, OutputInterface $output)
+    {
+        $generator = new YamlObjectGeneratorClass();
+        return $generator->generateCode($file, $output);
     }
 }

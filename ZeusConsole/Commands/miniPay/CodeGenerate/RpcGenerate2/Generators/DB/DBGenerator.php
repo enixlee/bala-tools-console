@@ -16,6 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\Base\Generator;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\DB\Parse\ParseTable;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\RpcGenerate2;
 
@@ -23,7 +24,7 @@ use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\RpcGenerate2;
  * Class DBGenerator
  * @package ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators
  */
-class DBGenerator
+class DBGenerator implements Generator
 {
 
     /**
@@ -66,33 +67,10 @@ class DBGenerator
             ->depth('<10')
             ->in($templatePath);
 
-//        $exportPath = $this->getMainClass()->getExportPath();
-        //清理目标路径
-//        $fs = new Filesystem();
-//        $fs->remove($this->exportPath);
-//        $fs->mkdir($this->exportPath);
-
-
-//        //加载导出配置
-//        $configPath = $this->getGenerateConfPath() . DIRECTORY_SEPARATOR . 'generate.yaml';
-//        if ($fs->exists($configPath)) {
-//
-//            $this->exportConfig = Yaml::parse(file_get_contents($configPath));
-//        }
-
         $output->writeln([
             "<info>开始生成数据代码文件....</info>"
 
         ]);
-
-//        if ($this->getMainClass()->isVerboseDebug()) {
-//            $output->writeln([
-//                'form:',
-//                $templatePath,
-//                'to:',
-//                $this->exportPath
-//            ]);
-//        }
 
 
         $fileCount = 0;
@@ -112,10 +90,6 @@ class DBGenerator
 
 
         $output->writeln("<info>" . Carbon::now()->toDateTimeString() . "===>生成完毕,共生成数据库文件:$fileCount 个</info>");
-//        if ($errorCount !== 0) {
-//            $output->writeln($this->errorMsg);
-//            $output->writeln("<error>错误:$errorCount 个</error>");
-//        }
     }
 
 

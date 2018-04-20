@@ -1,28 +1,29 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: zhipeng
- * Date: 2017/12/12
- * Time: 下午5:29
+ * User: peng.zhi
+ * Date: 2018/4/20
+ * Time: 8:00 PM
  */
 
-namespace ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\CodeTemplateWriters;
+namespace ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\YAMLObject\CodeTemplateWriters;
 
 
-use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Parameter\RpcOutputParameter;
+use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\YAMLObject\Parameter\ObjectParameter;
 
-class LogicTemplatesReturnParameterSetterAndGetterWriter extends WriterBase
+class ObjectSetterAndGetterWriter extends WriterBase
 {
-
+    /**
+     * @var ObjectParameter
+     */
     private $param;
 
     /**
-     * LogicTemplatesReturnParameterSetterAndGetterWriter constructor.
-     * @param RpcOutputParameter $param
+     * ObjectSetterAndGetterWriter constructor.
+     * @param ObjectParameter $param
      */
     public function __construct($param)
     {
-        parent::__construct(null);
         $this->param = $param;
     }
 
@@ -53,7 +54,7 @@ EOF;
 
         $setData = [
             "%comment%" => $param->getComment(),
-            "%type%" => $param->getTypeDeclareAsString(),
+            "%type%" => $param->getVariableCommentString(),
             "%name%" => $param->getName(),
             "%defaultValue%" => $value
         ];
@@ -84,19 +85,8 @@ EOF;
             "%type%" => $param->getTypeDeclareAsString(),
             "%name%" => $param->getName()
         ];
-
-        if ($param->isObject()) {
-            $setData = [
-                "%comment%" => $param->getObjectType(),
-                "%FunctionName%" => $param->getFunctionName(),
-                "%type%" => $param->getObjectType(),
-                "%name%" => $param->getName()
-            ];
-        }
         $message = translator()->trans($format, $setData);
         return $message;
-
-
     }
 
     public function writeSetFunction()
@@ -143,15 +133,10 @@ EOF;
             "%name%" => $param->getName()
         ];
 
-        if ($param->isMessage() && !$param->isRepeated()) {
-            $message = translator()->trans($formatMessageNotRepeat, $setData);
-        } else if ($param->isMessage() && $param->isRepeated()) {
-            $message = translator()->trans($formatMessage, $setData);
-        } else if ($param->isObject() && !$param->isRepeated()) {
+        if ($param->isObject() && !$param->isRepeated()) {
             $message = translator()->trans($formatMessageNotRepeat, $setData);
         } else if ($param->isObject() && $param->isRepeated()) {
             $message = translator()->trans($formatMessage, $setData);
-
         } else {
             $message = translator()->trans($formatNormal, $setData);
         }
