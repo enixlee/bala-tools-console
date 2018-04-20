@@ -171,6 +171,13 @@ class RpcGenerate2 extends CommandBase
             $output->writeln($this->errorMsg);
             $output->writeln("<error>错误:$errorCount 个</error>");
         }
+
+
+        //生成发布信息
+        $buildInfo = [];
+        $buildInfo['toolsVersion'] = getConfig('version');
+        $buildFile = $this->exportPath . DIRECTORY_SEPARATOR . 'buildInformation.yaml';
+        $fs->dumpFile($buildFile, Yaml::dump($buildInfo));
     }
 
 

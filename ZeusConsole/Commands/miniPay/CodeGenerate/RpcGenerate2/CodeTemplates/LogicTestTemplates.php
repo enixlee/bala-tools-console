@@ -3,7 +3,6 @@
 /**
  * Created by Generator.
  * User: Generator
- * toolsVersion:<?php print getConfig('version')."\n"?>
  */
 
 <?php $writer = new \ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\CodeTemplateWriters\LogicTestTemplatesWriter($generateClass)?>

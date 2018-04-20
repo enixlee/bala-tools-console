@@ -3,7 +3,6 @@
 /**
 * Created by Generator.
 * User: Generator
-* toolsVersion:<?php print getConfig('version') . "\n" ?>
 */
 
 namespace <?php echo $generateClass->getNameSpace() ?>;
