@@ -30,15 +30,16 @@ class LogicTemplatesReturnParameterSetterAndGetterWriter extends WriterBase
     public function writeVariable()
     {
         $format = <<<EOF
-/**
-     * @var %s %s
+
+    /**
+     * @var %type% %comment%
      */
-    private $%s = %s;
-     
+    private \$%name% = %defaultValue%;
 EOF;
         $param = $this->param;
 
 //        $format = "%sprivate $%s = %s;\n";
+
         if ($this->param->isRepeated()) {
             $value = "null";
         } elseif (is_null($this->param->getDefault())) {
@@ -48,16 +49,23 @@ EOF;
         } else {
             $value = $this->param->getDefault();
         }
-        return sprintf($format, $param->getVariableCommentString(),
-            $param->getComment(),
-            $param->getName(),
-            $value);
+
+
+        $setData = [
+            "%comment%" => $param->getComment(),
+            "%type%" => $param->getTypeDeclareAsString(),
+            "%name%" => $param->getName(),
+            "%defaultValue%" => $value
+        ];
+
+        return translator()->trans($format, $setData);
     }
 
     public function writeAddFunction()
     {
         $param = $this->param;
         $format = <<<EOF
+        
     /**
      * @var %s|null \$item
      */
@@ -81,6 +89,7 @@ EOF;
     {
         $param = $this->param;
         $formatNormal = <<<EOF
+        
     /**
      * @param %comment% \$%name%
      */
@@ -91,6 +100,7 @@ EOF;
 EOF;
 
         $formatMessage = <<<EOF
+        
     /**
      * @param %comment% \$%name%
      */
@@ -100,6 +110,7 @@ EOF;
     }
 EOF;
         $formatMessageNotRepeat = <<<EOF
+        
     /**
      * @param %comment% \$%name%
      */
@@ -126,6 +137,43 @@ EOF;
             $message = translator()->trans($formatNormal, $setData);
         }
 
+        return $message;
+    }
+
+    public function writeResetFunction()
+    {
+        $param = $this->param;
+        $formatNormal = <<<EOF
+        
+    /**
+     * @param %comment% \$%name%
+     */
+    public function reset%FunctionName%ToDefault(\$%name% = %defaultValue%)
+    {
+        \$this->%name% = \$%name%;
+    }
+EOF;
+
+        if ($this->param->isRepeated()) {
+            $defaultValue = "[]";
+        } elseif (is_null($this->param->getDefault())) {
+            $defaultValue = "null";
+        } elseif ($this->param->is_string()) {
+            $defaultValue = '"' . strval($this->param->getDefault()) . '"';
+        } else {
+            $defaultValue = $this->param->getDefault();
+        }
+
+
+        $setData = [
+            "%comment%" => $param->getVariableCommentString(),
+            "%FunctionName%" => $param->getFunctionName(),
+            "%type%" => $param->getTypeDeclareAsString(),
+            "%name%" => $param->getName(),
+            "%defaultValue%" => $defaultValue
+        ];
+
+        $message = translator()->trans($formatNormal, $setData);
         return $message;
     }
 }

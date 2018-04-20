@@ -8,7 +8,7 @@
     {
         return $this-><?php echo $param->getName();?>;
     }
-
 <?php echo $writer->writeSetFunction() ?>
+<?php echo $writer->writeResetFunction() ?>
 <?php if($param->isRepeated()) echo $writer->writeAddFunction() ?>
 
