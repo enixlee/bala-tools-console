@@ -158,8 +158,13 @@ class RpcOutputParameter extends ParameterBase
      */
     public function getObjectFullClassName()
     {
-        $nameSpace = getConfig('miniPay.codeGenerate.rpcGenerate2.NameSpace', "bala\codeTemplate");
-        return "\\" . $nameSpace . "\\objects\\" . $this->getObjectTypeClassName();
+        $nameSpace = getConfig('bala.codeGenerate.returnParameter.ref.Object.NameSpace', null);
+        if (is_null($nameSpace)) {
+            $nameSpace = getConfig('miniPay.codeGenerate.rpcGenerate2.NameSpace', "bala\codeTemplate");
+            return "\\" . $nameSpace . "\\objects\\" . $this->getObjectTypeClassName();
+        }
+        return "\\" . $nameSpace . "\\" . $this->getObjectTypeClassName();
+
     }
 
 

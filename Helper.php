@@ -44,7 +44,7 @@ function ZeusConfigPath()
  * 获取配置
  * @param null $key 如果此值为空,则返回所有配置
  * @param null $defaultValue key为空的时候返回的值
- * @return array|null
+ * @return array|null|string
  */
 function getConfig($key = null, $defaultValue = null)
 {
