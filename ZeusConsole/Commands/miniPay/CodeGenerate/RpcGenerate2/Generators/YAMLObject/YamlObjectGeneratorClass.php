@@ -36,14 +36,14 @@ class YamlObjectGeneratorClass extends GeneratorClassBase
         return $this->parameters;
     }
 
-    protected $implements = null;
+    protected $extends = null;
 
     /**
      * @return null
      */
-    public function getImplements()
+    public function getExtends()
     {
-        return $this->implements;
+        return $this->extends;
     }
 
 
@@ -55,7 +55,7 @@ class YamlObjectGeneratorClass extends GeneratorClassBase
     {
         parent::fromArray($arr);
 
-        $this->implements = $arr["implements"] ?? null;
+        $this->extends = $arr["extends"] ?? null;
 
         $returnParameters = $arr['parameters'] ?? [];
         $parameterTypeTemplate = new ParameterTypeTemplate();

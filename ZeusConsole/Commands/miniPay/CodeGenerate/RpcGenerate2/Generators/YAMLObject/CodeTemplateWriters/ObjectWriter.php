@@ -34,7 +34,7 @@ class ObjectWriter extends WriterBase
         $format = <<<EOF
 class %className%\n
 EOF;
-        if (!is_null($this->mainClass->getImplements())) {
+        if (!is_null($this->mainClass->getExtends())) {
             $format = <<<EOF
 class %className% extends %parent%\n
 EOF;
@@ -43,7 +43,7 @@ EOF;
 
         $setData = [
             "%className%" => $this->mainClass->getClassName(),
-            "%parent%" => $this->mainClass->getImplements(),
+            "%parent%" => $this->mainClass->getExtends(),
         ];
 
         return translator()->trans($format, $setData);
