@@ -68,4 +68,37 @@ EOF;
     }
 
 
+    public function writeObjectProperty()
+    {
+
+        $format = <<<EOF
+    /**
+     * 对象名称
+     * @return string
+     */
+    public function getObjectName()
+    {
+        return "%className%";
+    }
+
+    /**
+     * 版本号
+     * @return int
+     */
+    public function getObjectVersion()
+    {
+        return %version%;
+    }
+
+EOF;
+        $setData = [
+            "%className%" => $this->mainClass->getClassName(),
+            "%version%" => $this->mainClass->getVersion(),
+        ];
+
+        return translator()->trans($format, $setData);
+
+    }
+
+
 }

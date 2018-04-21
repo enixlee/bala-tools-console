@@ -14,10 +14,8 @@ use Pluto\Foundation\Serializer\ObjectSerializerTrait;
 <?php echo $writer->writeClassName() ?>
 {
     use ObjectSerializerTrait;
-    /**
-     * 版本号
-     */
-    const version = <?php echo $generateClass->getVersion()?>;
+
+<?php echo $writer->writeObjectProperty() ?>
 <?php foreach ($generateClass->getParameters() as $param) : ?>
 <?php echo $view->render('ObjectSetterAndGetter.php',['param'=>$param]) ?>
 <?php echo "\n" ?>
