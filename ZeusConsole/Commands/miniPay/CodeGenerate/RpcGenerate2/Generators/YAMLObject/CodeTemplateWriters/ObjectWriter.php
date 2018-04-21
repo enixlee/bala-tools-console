@@ -9,7 +9,6 @@
 namespace ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\YAMLObject\CodeTemplateWriters;
 
 
-use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\YAMLObject\Parameter\ObjectParameter;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\YAMLObject\YamlObjectGeneratorClass;
 
 class ObjectWriter extends WriterBase
@@ -28,6 +27,25 @@ class ObjectWriter extends WriterBase
         $this->mainClass = $mainClass;
     }
 
+    public function writeClassComment()
+    {
+        $format = <<<EOF
+/**
+ *
+ * %description%
+ * %deprecated%
+ * @package %namespace%
+ */
+
+EOF;
+        $setData = [
+            "%description%" => $this->mainClass->getDescription(),
+            "%deprecated%" => $this->mainClass->isDeprecated() ? "@deprecated" : "",
+            "%namespace%" => $this->mainClass->getNameSpace()
+        ];
+
+        return translator()->trans($format, $setData);
+    }
 
     public function writeClassName()
     {

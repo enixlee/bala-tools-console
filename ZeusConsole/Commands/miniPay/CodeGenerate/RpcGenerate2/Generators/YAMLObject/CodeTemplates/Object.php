@@ -1,5 +1,6 @@
 <?php echo "<?php" ?>
 <?php $writer = new \ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\YAMLObject\CodeTemplateWriters\ObjectWriter($generateClass)?>
+
 /**
 * Created by Generator.
 * User: Generator
@@ -9,11 +10,7 @@ namespace <?php echo $generateClass->getNameSpace()?>;
 
 use Pluto\Foundation\Serializer\ObjectSerializerTrait;
 
-/**
- *
- * <?php echo $generateClass->getDescription() . "\n"?>
- * @package <?php echo $generateClass->getNameSpace(). "\n"?>
- */
+<?php echo $writer->writeClassComment() ?>
 <?php echo $writer->writeClassName() ?>
 {
     use ObjectSerializerTrait;
