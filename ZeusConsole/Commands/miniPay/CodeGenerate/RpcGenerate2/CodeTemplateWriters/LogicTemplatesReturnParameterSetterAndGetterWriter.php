@@ -79,9 +79,9 @@ EOF;
 EOF;
 
         $setData = [
-            "%comment%" => $param->getTypeDeclareAsString(),
+            "%comment%" => $param->getMessageClassName(),
             "%FunctionName%" => $param->getFunctionName(),
-            "%type%" => $param->getTypeDeclareAsString(),
+            "%type%" => $param->getMessageClassName(),
             "%name%" => $param->getName()
         ];
 
