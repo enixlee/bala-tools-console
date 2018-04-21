@@ -237,7 +237,7 @@ class RpcGenerate2 extends CommandBase implements GeneratorClass
     {
         $generator = new YamlObjectGeneratorClass();
         $generator->setExportPath($this->exportPath);
-//        $generator->setGeneratorConfig(new RpcGenerateConfig($this->exportConfig));
+        $generator->setGeneratorConfig(new RpcGenerateConfig($this->exportConfig));
         return $generator->generateCode($file, $output);
     }
 }

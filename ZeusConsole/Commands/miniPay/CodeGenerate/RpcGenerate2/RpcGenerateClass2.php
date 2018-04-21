@@ -74,29 +74,6 @@ class RpcGenerateClass2 extends GeneratorClassBase
 
 
     /**
-     * 导出配置
-     * @var RpcGenerateConfig
-     */
-    private $generatorConfig;
-
-    /**
-     * @param RpcGenerateConfig $generatorConfig
-     */
-    public function setGeneratorConfig($generatorConfig)
-    {
-        $this->generatorConfig = $generatorConfig;
-    }
-
-    /**
-     * @return RpcGenerateConfig
-     */
-    public function getGeneratorConfig()
-    {
-        return $this->generatorConfig;
-    }
-
-
-    /**
      * @return mixed
      */
     public function getClassTestName()

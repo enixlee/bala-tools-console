@@ -9,6 +9,8 @@
 namespace ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\Base;
 
 
+use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\RpcGenerateConfig;
+
 abstract class GeneratorClassBase implements GeneratorClass
 {
     /**
@@ -208,6 +210,28 @@ abstract class GeneratorClassBase implements GeneratorClass
     public function setExportPath(string $exportPath): void
     {
         $this->exportPath = $exportPath;
+    }
+
+    /**
+     * 导出配置
+     * @var RpcGenerateConfig
+     */
+    protected $generatorConfig;
+
+    /**
+     * @param RpcGenerateConfig $generatorConfig
+     */
+    public function setGeneratorConfig($generatorConfig)
+    {
+        $this->generatorConfig = $generatorConfig;
+    }
+
+    /**
+     * @return RpcGenerateConfig
+     */
+    public function getGeneratorConfig()
+    {
+        return $this->generatorConfig;
     }
 
 

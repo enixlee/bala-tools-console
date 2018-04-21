@@ -58,7 +58,10 @@ class YamlObjectGeneratorClass extends GeneratorClassBase
         $this->extends = $arr["extends"] ?? null;
 
         $returnParameters = $arr['parameters'] ?? [];
+
         $parameterTypeTemplate = new ParameterTypeTemplate();
+        $parameterTypeTemplate->setGeneratorExtendsConfig($this->generatorConfig->getOriginConfig());
+
         foreach ($returnParameters as $parameter) {
             $ins = new ObjectParameter($parameterTypeTemplate);
             $ins->fillDatas($parameter);
@@ -98,6 +101,7 @@ class YamlObjectGeneratorClass extends GeneratorClassBase
 
         $loader = new FilesystemLoader(__DIR__ . DIRECTORY_SEPARATOR . "CodeTemplates/%name%");
         $template = new PhpEngine(new TemplateNameParser(), $loader);
+
 
         try {
             $this->fromArray($yamlContent);
