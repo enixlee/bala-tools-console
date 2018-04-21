@@ -2,6 +2,10 @@
 #   更新记录
 
 #   new Features/dev-master
+-   3.13.4
+    -   发布日期:2018年04月21日
+    -   更新内容:
+        -   增加ReturnParameter中Object外部引用
 -   3.13.3
     -   发布日期:2018年04月21日
     -   更新内容:
