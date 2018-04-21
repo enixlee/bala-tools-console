@@ -2,6 +2,10 @@
 #   更新记录
 
 #   new Features/dev-master
+-   3.13.2
+    -   发布日期:2018年04月21日
+    -   更新内容:
+        -   增加ObjectVersion.ObjectName支持
 -   3.13.1
     -   发布日期:2018年04月21日
     -   更新内容:
