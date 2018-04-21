@@ -22,6 +22,7 @@ abstract class ParameterBase
     private $default = null;
     private $require = true;
     private $comment = null;
+    protected $repeated = false;
 
 
     /**
@@ -183,6 +184,48 @@ abstract class ParameterBase
     }
 
     /**
+     * @return bool
+     */
+    public function isRepeated(): bool
+    {
+        return $this->repeated;
+    }
+
+    protected const OBJ_PREFIX = "obj.";
+
+    /**
+     * @return bool
+     */
+    public function isObject()
+    {
+        return starts_with($this->getType(), self::OBJ_PREFIX);
+    }
+
+
+    /**
+     * 是否是自定义消息
+     * @return bool
+     */
+    public function isMessage()
+    {
+        return $this->getType() == 'message';
+    }
+
+    /**
+     * 获取对象类名
+     * @return null|string
+     */
+    public function getObjectTypeClassName()
+    {
+        if ($this->isObject()) {
+            $declare = str_replace_first(self::OBJ_PREFIX, "", $this->type);
+            return $declare;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * 填充数据
      * @param $originDataArray
      * @throws RpcGenerateParserError
@@ -205,6 +248,30 @@ abstract class ParameterBase
         $this->default = isset($this->originData['default']) ? $this->originData['default'] : null;
         $this->require = isset($this->originData['require']) ? $this->originData['require'] : false;
         $this->comment = isset($this->originData['comment']) ? $this->originData['comment'] : "";
+        $this->repeated = boolval($this->originData['repeated'] ?? false);
+    }
+
+    /**
+     * 检测参数错误
+     * @throws RpcGenerateParserError
+     */
+    public function checkError()
+    {
+        if (is_null($this->name)) {
+            $this->error("字段缺少name");
+        }
+        if (is_null($this->type)) {
+            $this->error("字段{$this->name}:缺少type");
+        }
+    }
+
+    /**
+     * @param $message
+     * @throws RpcGenerateParserError
+     */
+    protected function error($message)
+    {
+        throw new RpcGenerateParserError($message);
     }
 
 

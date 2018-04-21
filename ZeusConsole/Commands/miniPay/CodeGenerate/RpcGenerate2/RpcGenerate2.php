@@ -177,7 +177,6 @@ class RpcGenerate2 extends CommandBase implements GeneratorClass
             $output->writeln("<info>忽略:$ignoreCount 个</info>");
         }
         if ($errorCount !== 0) {
-            $output->writeln($this->errorMsg);
             $output->writeln("<error>错误:$errorCount 个</error>");
         }
 
@@ -204,14 +203,14 @@ class RpcGenerate2 extends CommandBase implements GeneratorClass
             return self::ReturnFailed;
         }
 
-        $yamlType = $yamlContent['yamlType'] ?? "rpc";
+        $yamlType = $yamlContent['yamlType'] ?? GeneratorClass::YAML_TYPE_RPC;
 
 
         switch ($yamlType) {
-            case "rpc":
+            case GeneratorClass::YAML_TYPE_RPC:
                 $result = $this->generateCodeYamlRpc($file, $output);
                 break;
-            case "object":
+            case GeneratorClass::YAML_TYPE_OBJECT:
                 $result = $this->generateCodeYamlObject($file, $output);
                 break;
             default:
@@ -227,64 +226,18 @@ class RpcGenerate2 extends CommandBase implements GeneratorClass
 
     protected function generateCodeYamlRpc(SplFileInfo $file, OutputInterface $output)
     {
-        $relativePath = $file->getRelativePath();
-        $yamlContent = Yaml::parse($file->getContents());
-
-        if (empty($yamlContent)) {
-            return self::ReturnSuccess;
-        }
-
-        $loader = new FilesystemLoader(__DIR__ . DIRECTORY_SEPARATOR . "CodeTemplates/%name%");
-        $template = new PhpEngine(new TemplateNameParser(), $loader);
-
-        $GenerateClass = new RpcGenerateClass2();
-        $GenerateClass->setGeneratorConfig(new RpcGenerateConfig($this->exportConfig));
-
-
-        $ClassNameParts = explode("/", ucwords($relativePath));
-        //首字母大写
-        $ClassNameParts = array_map("ucfirst", $ClassNameParts);
-
-        $ClassName = "Logic" . join("", $ClassNameParts) . ucfirst($file->getBasename(".yaml"));
-        //yaml第一个文件夹,为命名空间
-        $nameSpace = $this->getExportNameSpace() . "\\Logic" . $ClassNameParts[0];
-        $functionName = ucfirst($file->getBasename(".yaml"));
-
-
-        $GenerateClass->setNameSpace($nameSpace);
-        $GenerateClass->setClassName($ClassName);
-        $GenerateClass->setFunctionName($functionName);
-
-        try {
-            $GenerateClass->fromArray($yamlContent);
-
-        } catch (RpcGenerateParserError $e) {
-            $this->errorMsg[] = "<error>YAML解析错误:" . $file->getPathname() . " </error>";
-            $this->errorMsg[] = "<error>错误信息 无效的类型或者字段:" . $e->getMessage() . "</error>";
-//            $output->writeln("<error>YAML解析错误:" . $file->getPathname() . "</error>");
-            return self::ReturnFailed;
-        }
-
-        //导出路径增加命名空间
-        $nameSpaceExportPath = $this->exportPath . DIRECTORY_SEPARATOR .
-            str_replace("\\", DIRECTORY_SEPARATOR, $nameSpace);
-//        dumpLine($nameSpaceExportPath);
-        $fs = new Filesystem();
-
-        //生成RPC服务代码
-        $GenerateClass->dumpRPCLogicFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
-        //生成返回值
-        $GenerateClass->dumpReturnParameterFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
-        //生产测试用例代码
-        $GenerateClass->dumpUnitTestFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
-        //错误Code
-        $GenerateClass->dumpErrorCodeFiles($nameSpaceExportPath, $template, $fs, $output, $this->isVerboseDebug());
-        return self::ReturnSuccess;
+        $generator = new RpcGenerateClass2();
+        $generator->setExportPath($this->exportPath);
+        $generator->setGeneratorConfig(new RpcGenerateConfig($this->exportConfig));
+        return $generator->generateCode($file, $output);
     }
+
 
     protected function generateCodeYamlObject(SplFileInfo $file, OutputInterface $output)
     {
         $generator = new YamlObjectGeneratorClass();
+        $generator->setExportPath($this->exportPath);
+//        $generator->setGeneratorConfig(new RpcGenerateConfig($this->exportConfig));
         return $generator->generateCode($file, $output);
     }
 }

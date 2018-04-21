@@ -41,6 +41,16 @@ abstract class GeneratorClassBase implements GeneratorClass
     protected $description;
 
     /**
+     * 获取导出的命名空间
+     * @return string
+     */
+    public function getExportNameSpace()
+    {
+        $nameSpace = getConfig('miniPay.codeGenerate.rpcGenerate2.NameSpace', "bala\codeTemplate");
+        return rtrim($nameSpace);
+    }
+
+    /**
      * @return string
      */
     public function getNameSpace(): string
@@ -138,6 +148,17 @@ abstract class GeneratorClassBase implements GeneratorClass
     }
 
     /**
+     * 获取扩展项
+     * @param $key
+     * @param null $default
+     * @return mixed|null
+     */
+    public function getOption($key, $default = null)
+    {
+        return $this->options[$key] ?? $default;
+    }
+
+    /**
      * @return string
      */
     public function getDescription(): string
@@ -161,6 +182,32 @@ abstract class GeneratorClassBase implements GeneratorClass
         $this->deprecated = boolval($arr['deprecated'] ?? false);
         $this->options = $arr['options'] ?? [];
         $this->description = $arr['description'] ?? "";
+    }
+
+    public function checkError()
+    {
+
+    }
+
+    /**
+     * @var string
+     */
+    protected $exportPath;
+
+    /**
+     * @return string
+     */
+    public function getExportPath(): string
+    {
+        return $this->exportPath;
+    }
+
+    /**
+     * @param string $exportPath
+     */
+    public function setExportPath(string $exportPath): void
+    {
+        $this->exportPath = $exportPath;
     }
 
 

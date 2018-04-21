@@ -16,6 +16,7 @@ use Symfony\Component\Templating\Loader\FilesystemLoader;
 use Symfony\Component\Templating\PhpEngine;
 use Symfony\Component\Templating\TemplateNameParser;
 use Symfony\Component\Yaml\Yaml;
+use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate\Exceptions\RpcGenerateParserError;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\Base\GeneratorClassBase;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\YAMLObject\Parameter\ObjectParameter;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Parameter\ParameterTypeTemplate;
@@ -35,19 +36,27 @@ class YamlObjectGeneratorClass extends GeneratorClassBase
         return $this->parameters;
     }
 
+    protected $implements = null;
+
     /**
-     * 获取导出的命名空间
-     * @return string
+     * @return null
      */
-    public function getExportNameSpace()
+    public function getImplements()
     {
-        $nameSpace = getConfig('miniPay.codeGenerate.rpcGenerate2.NameSpace', "bala\codeTemplate");
-        return rtrim($nameSpace);
+        return $this->implements;
     }
 
+
+    /**
+     * @param array $arr
+     * @throws \ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate\Exceptions\RpcGenerateParserError
+     */
     public function fromArray(array $arr)
     {
         parent::fromArray($arr);
+
+        $this->implements = $arr["implements"] ?? null;
+
         $returnParameters = $arr['parameters'] ?? [];
         $parameterTypeTemplate = new ParameterTypeTemplate();
         foreach ($returnParameters as $parameter) {
@@ -55,21 +64,28 @@ class YamlObjectGeneratorClass extends GeneratorClassBase
             $ins->fillDatas($parameter);
             $this->parameters[] = $ins;
         }
+
+
+    }
+
+    /**
+     * @throws \ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate\Exceptions\RpcGenerateParserError
+     */
+    public function checkError()
+    {
+        parent::checkError();
+        foreach ($this->parameters as $parameter) {
+            $parameter->checkError();
+        }
     }
 
     protected function dumpObject(string $exportPath, PhpEngine $template, Filesystem $fs, OutputInterface $output)
     {
         $filePath = "{$exportPath}/{$this->getClassName()}.php";
-//        dumpLine($filePath);
         $renderTemplate = $template->render("Object.php", [
             'generateClass' => $this,
         ]);
-
-//        dumpLine($renderTemplate);
 //
-//        if ($isDebug) {
-//            $output->writeln("Generator Test Unit:$filePath");
-//        }
         $fs->dumpFile($filePath, $renderTemplate);
         return true;
     }
@@ -78,13 +94,21 @@ class YamlObjectGeneratorClass extends GeneratorClassBase
     public function generateCode(SplFileInfo $file, OutputInterface $output)
     {
 
-//        $relativePath = $file->getRelativePath();
         $yamlContent = Yaml::parse($file->getContents());
 
         $loader = new FilesystemLoader(__DIR__ . DIRECTORY_SEPARATOR . "CodeTemplates/%name%");
         $template = new PhpEngine(new TemplateNameParser(), $loader);
 
-        $this->fromArray($yamlContent);
+        try {
+            $this->fromArray($yamlContent);
+            $this->checkError();
+        } catch (RpcGenerateParserError $e) {
+            $errorMsg = [];
+            $errorMsg[] = "<error>YAML Object 解析错误:" . $file->getPathname() . "</error>";
+            $errorMsg[] = "<error>错误信息 无效的类型或者字段:" . $e->getMessage() . "</error>";
+            $output->writeln($errorMsg);
+            return self::ReturnFailed;
+        }
 
         $className = ucfirst($file->getBasename(".yaml"));
         $this->setClassName($className);
@@ -98,7 +122,7 @@ class YamlObjectGeneratorClass extends GeneratorClassBase
 
         $this->dumpObject($nameSpaceExportPath, $template, new Filesystem(), $output);
 
-        return 2;
+        return self::ReturnSuccess;
     }
 
 

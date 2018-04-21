@@ -85,19 +85,6 @@ class RpcOutputParameter extends ParameterBase
 
 
     /**
-     * @var boolean
-     */
-    private $repeated;
-
-    /**
-     * @return bool
-     */
-    public function isRepeated(): bool
-    {
-        return $this->repeated;
-    }
-
-    /**
      * @var RpcOutputParameter[]
      */
     private $messageData = [];
@@ -126,28 +113,8 @@ class RpcOutputParameter extends ParameterBase
     {
         $converter = new CamelCaseToSnakeCaseNameConverter(null, false);
         $this->functionName = $converter->denormalize($functionName);
-//        $this->functionName = ucfirst($functionName);
     }
 
-
-    /**
-     * 是否是自定义消息
-     * @return bool
-     */
-    public function isMessage()
-    {
-        return $this->getType() == 'message';
-    }
-
-    protected const OBJ_PREFIX = "obj.";
-
-    /**
-     * @return bool
-     */
-    public function isObject()
-    {
-        return starts_with($this->getType(), self::OBJ_PREFIX);
-    }
 
     /**
      * @var string
@@ -163,9 +130,8 @@ class RpcOutputParameter extends ParameterBase
         parent::fillDatas($originDataArray);
 
         $this->setFunctionName($this->getName());
-        $this->repeated = isset($this->originData['repeated']) ? boolval($this->originData['repeated']) : false;
         if ($this->isMessage()) {
-            $this->fillMessageData($this->originData['messageData']);
+            $this->fillMessageData($originDataArray['messageData']);
         }
     }
 
@@ -190,11 +156,12 @@ class RpcOutputParameter extends ParameterBase
     /**
      * @return string
      */
-    public function getObjectType()
+    public function getObjectFullClassName()
     {
         $nameSpace = getConfig('miniPay.codeGenerate.rpcGenerate2.NameSpace', "bala\codeTemplate");
-        return "\\" . $nameSpace . "\\objects\\" . str_replace_first(self::OBJ_PREFIX, "", $this->getType());
+        return "\\" . $nameSpace . "\\objects\\" . $this->getObjectTypeClassName();
     }
+
 
     public function getTypeDeclareAsString()
     {
@@ -203,12 +170,12 @@ class RpcOutputParameter extends ParameterBase
             if ($this->isMessage()) {
                 $declare = $this->getMessageClassName() . "[]";
             } elseif ($this->isObject()) {
-                $declare = $this->getObjectType() . "[]";
+                $declare = $this->getObjectFullClassName() . "[]";
             } else {
                 $declare = "array";
             }
         } elseif ($this->isObject()) {
-            $declare = $this->getObjectType();
+            $declare = $this->getObjectFullClassName();
         } elseif ($this->isMessage()) {
             $declare = $this->getMessageClassName();
         } elseif ($declare == "mixed") {
@@ -224,14 +191,14 @@ class RpcOutputParameter extends ParameterBase
             if ($this->isMessage()) {
                 $declare = $this->getMessageClassName() . "[]";
             } elseif ($this->isObject()) {
-                $declare = $this->getObjectType() . "[]";
+                $declare = $this->getObjectFullClassName() . "[]";
             } else {
                 $declare = $declare . "[]";
             }
         } elseif ($this->isMessage()) {
             $declare = $this->getMessageClassName();
         } elseif ($this->isObject()) {
-            $declare = $this->getObjectType();
+            $declare = $this->getObjectFullClassName();
         }
         return $declare;
     }

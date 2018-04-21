@@ -11,22 +11,10 @@ namespace ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\YAML
 
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Parameter\ParameterBase;
-use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Parameter\RpcOutputParameter;
 
 class ObjectParameter extends ParameterBase
 {
-    /**
-     * @var boolean
-     */
-    private $repeated;
 
-    /**
-     * @return bool
-     */
-    public function isRepeated(): bool
-    {
-        return $this->repeated;
-    }
 
     /**
      * @var string
@@ -41,15 +29,6 @@ class ObjectParameter extends ParameterBase
         return $this->functionName;
     }
 
-    protected const OBJ_PREFIX = "obj.";
-
-    /**
-     * @return bool
-     */
-    public function isObject()
-    {
-        return starts_with($this->getType(), self::OBJ_PREFIX);
-    }
 
     /**
      * @param string $functionName
@@ -69,7 +48,17 @@ class ObjectParameter extends ParameterBase
         parent::fillDatas($originDataArray);
 
         $this->setFunctionName($this->getName());
-        $this->repeated = boolval($this->originData['repeated'] ?? false);//  boolval($this->originData['repeated']) : false;
+    }
+
+    /**
+     * @throws \ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate\Exceptions\RpcGenerateParserError
+     */
+    public function checkError()
+    {
+        parent::checkError();
+        if ($this->isMessage()) {
+            $this->error("Object对象中,字段{$this->getName()},类型不能为message");
+        }
     }
 
 
@@ -77,10 +66,7 @@ class ObjectParameter extends ParameterBase
     {
         $declare = parent::getTypeDeclareAsString();
         if ($this->isObject()) {
-            $declare = str_replace_first(self::OBJ_PREFIX, "", $this->getType());
-//            if ($this->isRepeated()) {
-//                $declare = "array";
-//            }
+            $declare = $this->getObjectTypeClassName();
         } else {
             if ($this->isRepeated()) {
                 $declare = "array";

@@ -11,16 +11,20 @@ namespace ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Templating\Loader\FilesystemLoader;
 use Symfony\Component\Templating\PhpEngine;
+use Symfony\Component\Templating\TemplateNameParser;
+use Symfony\Component\Yaml\Yaml;
+use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate\Exceptions\RpcGenerateParserError;
+use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Generators\Base\GeneratorClassBase;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Parameter\RpcInputParameter;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Parameter\RpcOutputParameter;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\Parameter\ParameterTypeTemplate;
 
-class RpcGenerateClass2
+class RpcGenerateClass2 extends GeneratorClassBase
 {
 
-    private $nameSpace;
-    private $className;
     private $classTestName;
     /**
      * @var string RPC返回类名
@@ -36,7 +40,6 @@ class RpcGenerateClass2
     }
 
 
-    private $description;
     private $routeUrl;
     private $method;
     private $rpcType;
@@ -55,19 +58,6 @@ class RpcGenerateClass2
         return $this->rpcBridge;
     }
 
-    /**
-     * 接口是否废弃
-     * @var bool
-     */
-    private $deprecated = false;
-
-    /**
-     * @return bool
-     */
-    public function isDeprecated(): bool
-    {
-        return $this->deprecated;
-    }
 
     /**
      * @var RpcOutputParameter []
@@ -80,23 +70,6 @@ class RpcGenerateClass2
     public function getReturnParameters()
     {
         return $this->returnParameters;
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function getNameSpace()
-    {
-        return $this->nameSpace;
-    }
-
-    /**
-     * @param mixed $nameSpace
-     */
-    public function setNameSpace($nameSpace)
-    {
-        $this->nameSpace = $nameSpace;
     }
 
 
@@ -158,13 +131,6 @@ class RpcGenerateClass2
         $this->rpcReturnParametersClassName = $className . "ReturnParameters";
     }
 
-    /**
-     * @param mixed $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
 
     /**
      * @param mixed $routeUrl
@@ -198,21 +164,6 @@ class RpcGenerateClass2
         $this->parameters = $parameters;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getClassName()
-    {
-        return $this->className;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
 
     /**
      * @return mixed
@@ -349,15 +300,20 @@ class RpcGenerateClass2
     }
 
 
+    /**
+     * @param array $arr
+     * @throws \ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate\Exceptions\RpcGenerateParserError
+     */
     public function fromArray(array $arr)
     {
-//        $this->className = isset($arr['className']) ? $arr['className'] : null;
-        $this->description = isset($arr['description']) ? $arr['description'] : null;
+        //因为之前已经设置过了,
+        $arr['className'] = $this->className;
+        parent::fromArray($arr);
+
         $this->routeUrl = isset($arr['routeUrl']) ? $arr['routeUrl'] : null;
         $this->method = isset($arr['method']) ? $arr['method'] : null;
         $this->rpcType = isset($arr['rpcType']) ? $arr['rpcType'] : null;
         $this->rpcBridge = isset($arr['rpcBridge']) ? boolval($arr['rpcBridge']) : false;
-        $this->deprecated = isset($arr['deprecated']) ? boolval($arr['deprecated']) : false;
 
         $parameterTypeTemplate = new ParameterTypeTemplate();
         $parameterTypeTemplate->setGeneratorExtendsConfig($this->generatorConfig->getOriginConfig());
@@ -375,7 +331,6 @@ class RpcGenerateClass2
         foreach ($errorCodes as $errorCodeData) {
             $errorCode = new RpcGenerateErrorCode();
             $errorCode->setName($errorCodeData['name']);
-//            $errorCode->setCode($errorCodeData['code']);
             $errorCode->setCode(isset($errorCodeData['code']) ? $errorCodeData['code'] : $errorCodeData['name']);
             $errorCode->setComment($errorCodeData['comment']);
             $this->errorCodes[] = $errorCode;
@@ -391,32 +346,9 @@ class RpcGenerateClass2
             }
         }
 
-        //处理options
-
-        $this->options = $arr['options'] ?? [];
 
     }
 
-    protected $options = [];
-
-    /**
-     * 获取扩展项
-     * @param $key
-     * @param null $default
-     * @return mixed|null
-     */
-    public function getOption($key, $default = null)
-    {
-        return $this->options[$key] ?? $default;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
 
     /**
      * @param $exportPath
@@ -424,7 +356,7 @@ class RpcGenerateClass2
      * @param null $fileName
      * @return string
      */
-    protected function getExportPath($exportPath, $namespace, $fileName = null)
+    protected function getRealExportPath($exportPath, $namespace, $fileName = null)
     {
         //RPC的命名空间
         $subNamespace = $namespace;
@@ -449,7 +381,7 @@ class RpcGenerateClass2
         //RPC的命名空间
 //        $subNamespace = "RPC";
 //        $filePath =  $exportPath . DIRECTORY_SEPARATOR . $subNamespace . DIRECTORY_SEPARATOR . $this->getClassName() . ".php";
-        $filePath = $this->getExportPath($exportPath, "RPC", $this->getClassName() . ".php");
+        $filePath = $this->getRealExportPath($exportPath, "RPC", $this->getClassName() . ".php");
         $renderTemplate = $template->render("LogicTemplates.php", [
             'generateClass' => $this,
         ]);
@@ -478,7 +410,7 @@ class RpcGenerateClass2
 
         //RPC的命名空间
         $subNamespace = "RPC";
-        $exportPath = $this->getExportPath($exportPath, $subNamespace);
+        $exportPath = $this->getRealExportPath($exportPath, $subNamespace);
 
         $writeParameter = $this->returnParameters;
 //        生成返回值中的message
@@ -581,7 +513,7 @@ class RpcGenerateClass2
     public function dumpUnitTestFiles(string $exportPath, PhpEngine $template, Filesystem $fs, OutputInterface $output, $isDebug = false)
     {
 
-        $filePath = $this->getExportPath($exportPath, "Tests", $this->getClassTestName() . ".php");
+        $filePath = $this->getRealExportPath($exportPath, "Tests", $this->getClassTestName() . ".php");
         $renderTemplate = $template->render("LogicTestTemplates.php", [
             'generateClass' => $this,
         ]);
@@ -606,7 +538,7 @@ class RpcGenerateClass2
         if (empty($this->errorCodes)) {
             return false;
         }
-        $filePath = $this->getExportPath($exportPath, "Errors", "Error" . $this->getClassName() . ".php");
+        $filePath = $this->getRealExportPath($exportPath, "Errors", "Error" . $this->getClassName() . ".php");
 //        $exportPath = $exportPath . DIRECTORY_SEPARATOR . "Errors";
         $renderTemplate = $template->render("LogicErrorTemplates.php", [
             'generateClass' => $this,
@@ -619,6 +551,75 @@ class RpcGenerateClass2
         }
         $fs->dumpFile($filePath, $renderTemplate);
         return true;
+    }
+
+    public function generateCode(SplFileInfo $file, OutputInterface $output)
+    {
+        $relativePath = $file->getRelativePath();
+        $yamlContent = Yaml::parse($file->getContents());
+
+        if (empty($yamlContent)) {
+            return self::ReturnSuccess;
+        }
+
+        $loader = new FilesystemLoader(__DIR__ . DIRECTORY_SEPARATOR . "CodeTemplates/%name%");
+        $template = new PhpEngine(new TemplateNameParser(), $loader);
+
+        $ClassNameParts = explode("/", ucwords($relativePath));
+        //首字母大写
+        $ClassNameParts = array_map("ucfirst", $ClassNameParts);
+
+        $ClassName = "Logic" . join("", $ClassNameParts) . ucfirst($file->getBasename(".yaml"));
+        //yaml第一个文件夹,为命名空间
+        $nameSpace = $this->getExportNameSpace() . "\\Logic" . $ClassNameParts[0];
+        $functionName = ucfirst($file->getBasename(".yaml"));
+
+        $this->setNameSpace($nameSpace);
+        $this->setClassName($ClassName);
+        $this->setFunctionName($functionName);
+
+        try {
+            $this->fromArray($yamlContent);
+            $this->checkError();
+
+        } catch (RpcGenerateParserError $e) {
+            $errorMsg[] = "<error>YAML解析错误:" . $file->getPathname() . " </error>";
+            $errorMsg[] = "<error>错误信息 无效的类型或者字段:" . $e->getMessage() . "</error>";
+            $output->writeln($errorMsg);
+            return self::ReturnFailed;
+        }
+
+
+        //导出路径增加命名空间
+        $nameSpaceExportPath = $this->getExportPath() . DIRECTORY_SEPARATOR .
+            str_replace("\\", DIRECTORY_SEPARATOR, $nameSpace);
+        $fs = new Filesystem();
+
+        $debugFlag = false;
+        //生成RPC服务代码
+        $this->dumpRPCLogicFiles($nameSpaceExportPath, $template, $fs, $output, $debugFlag);
+        //生成返回值
+        $this->dumpReturnParameterFiles($nameSpaceExportPath, $template, $fs, $output, $debugFlag);
+        //生产测试用例代码
+        $this->dumpUnitTestFiles($nameSpaceExportPath, $template, $fs, $output, $debugFlag);
+        //错误Code
+        $this->dumpErrorCodeFiles($nameSpaceExportPath, $template, $fs, $output, $debugFlag);
+        return self::ReturnSuccess;
+    }
+
+    /**
+     * @throws RpcGenerateParserError
+     */
+    public function checkError()
+    {
+        parent::checkError();
+
+        foreach ($this->parameters as $parameter) {
+            $parameter->checkError();
+        }
+        foreach ($this->returnParameters as $parameter) {
+            $parameter->checkError();
+        }
     }
 
 

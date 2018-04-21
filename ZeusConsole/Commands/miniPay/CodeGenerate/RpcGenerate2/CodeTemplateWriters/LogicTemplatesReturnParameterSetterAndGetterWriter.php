@@ -87,9 +87,9 @@ EOF;
 
         if ($param->isObject()) {
             $setData = [
-                "%comment%" => $param->getObjectType(),
+                "%comment%" => $param->getObjectFullClassName(),
                 "%FunctionName%" => $param->getFunctionName(),
-                "%type%" => $param->getObjectType(),
+                "%type%" => $param->getObjectFullClassName(),
                 "%name%" => $param->getName()
             ];
         }
