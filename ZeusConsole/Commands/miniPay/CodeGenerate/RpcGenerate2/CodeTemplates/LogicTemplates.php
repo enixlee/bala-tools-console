@@ -26,6 +26,10 @@ trait <?php echo $generateClass->getClassName()."\n" ?>
     /**
      * @var string
      */
+    public static $<?php echo $generateClass->getClassName()?>Description = '<?php echo $generateClass->getDescription() ?>';
+    /**
+     * @var string
+     */
     public static $<?php echo $generateClass->getClassName()?>RpcFunctionName = '<?php echo $generateClass->getFunctionName()?>';
     /**
      * @var string
