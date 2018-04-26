@@ -62,7 +62,7 @@ class RpcGenerateClass2 extends GeneratorClassBase
     /**
      * @var RpcOutputParameter []
      */
-    private $returnParameters;
+    private $returnParameters = [];
 
     /**
      * @return RpcOutputParameter[]
