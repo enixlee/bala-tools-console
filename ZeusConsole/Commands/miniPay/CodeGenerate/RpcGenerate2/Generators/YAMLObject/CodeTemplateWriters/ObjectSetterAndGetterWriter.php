@@ -121,7 +121,7 @@ EOF;
     public function set%FunctionName%(\$%name% = null)
     {
         if (is_array(\$%name%)) {
-            \$%name% = %type%::formArray($%name%);
+            \$%name% = %type%::fromArray($%name%);
         }
         \$this->%name% = \$%name%;
     }

@@ -38,8 +38,6 @@ class LogicTemplatesReturnParameterSetterAndGetterWriter extends WriterBase
 EOF;
         $param = $this->param;
 
-//        $format = "%sprivate $%s = %s;\n";
-
         if ($this->param->isRepeated()) {
             $value = "null";
         } elseif (is_null($this->param->getDefault())) {
@@ -53,7 +51,7 @@ EOF;
 
         $setData = [
             "%comment%" => $param->getComment(),
-            "%type%" => $param->getTypeDeclareAsString(),
+            "%type%" => empty($param->getTypeDeclareAsString()) ? "mixed" : $param->getTypeDeclareAsString(),
             "%name%" => $param->getName(),
             "%defaultValue%" => $value
         ];
@@ -131,7 +129,7 @@ EOF;
     public function set%FunctionName%(\$%name% = null)
     {
         if (is_array(\$%name%)) {
-            \$%name% = %type%::formArray($%name%);
+            \$%name% = %type%::fromArray($%name%);
         }
         \$this->%name% = \$%name%;
     }
