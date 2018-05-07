@@ -69,7 +69,10 @@ class ParseTable extends Parse
     {
         foreach ($columns as $column) {
             $newColumn = ParseColumn::parse($column);
-            $this->columns[] = $newColumn;
+
+            if ($newColumn->isValid()) {
+                $this->columns[] = $newColumn;
+            }
         }
     }
 

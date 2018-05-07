@@ -130,4 +130,25 @@ EOF;
         return $castFormat;
 
     }
+
+
+    function writeConstants()
+    {
+        $format = <<<EOF
+const DB_KEY_%keyName% = "%keyName%";\n
+EOF;
+        $columns = $this->generateClass->getTable()->getColumns();
+        $castString = "";
+        foreach ($columns as $column) {
+
+            if (in_array($column->getName(), $this->ignoreColumns)) {
+                continue;
+            }
+            $castString .= $this->format_tab . translator()->trans($format,
+                    [
+                        "%keyName%" => $column->getName()
+                    ]);
+        }
+        return $castString;
+    }
 }

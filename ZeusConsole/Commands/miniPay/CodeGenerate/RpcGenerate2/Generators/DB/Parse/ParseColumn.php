@@ -13,10 +13,24 @@ class ParseColumn extends Parse
 {
 
     protected $name;
+    /**
+     * 数据表达式类型
+     * @var string
+     */
+    protected $dateExprType;
     protected $dateType;
     protected $unsigned = false;
     protected $zerofill = false;
     protected $primary = false;
+
+    /**
+     * @return string
+     */
+    public function getDateExprType(): string
+    {
+        return $this->dateExprType;
+    }
+
 
     /**
      * @return mixed
@@ -97,6 +111,7 @@ class ParseColumn extends Parse
     {
         return $this->unique;
     }
+
     protected $default = null;
     protected $comment = "";
     protected $length = 0;
@@ -161,7 +176,8 @@ class ParseColumn extends Parse
 
     protected function parseBlock_data_type($block)
     {
-//        dumpLine($block);
+
+        $this->dateExprType = $block['expr_type'];
         $this->dateType = $block['base_expr'];
         $this->length = $block['length'] ?? null;
         $this->unsigned = $block['unsigned'] ?? false;
@@ -183,6 +199,15 @@ class ParseColumn extends Parse
         $array['unique'] = $this->unique;
         return $array;
 
+    }
+
+    /**
+     * 是否有效
+     * @return bool
+     */
+    public function isValid()
+    {
+        return !is_null($this->name);
     }
 
 
