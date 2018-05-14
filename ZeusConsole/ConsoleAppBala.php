@@ -12,7 +12,6 @@ namespace ZeusConsole;
 use ZeusConsole\Application\ApplicationBase;
 use ZeusConsole\Commands\GreetCommand;
 use ZeusConsole\Commands\miniPay\CodeGenerate\JSCodeGenerate\RpcJsUrlsExport;
-use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate\RpcGenerate;
 use ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\RpcGenerate2;
 use ZeusConsole\Commands\miniPay\CodeGenerate\VueCodeGenerate\VueRpcExport;
 use ZeusConsole\Commands\miniPay\Utils\encodePassword;
@@ -20,7 +19,7 @@ use ZeusConsole\Commands\miniPay\Utils\verifyEncodePassword;
 use ZeusConsole\Commands\System\dumpConfig;
 use ZeusConsole\Commands\System\showConfig;
 
-class ConsoleAppMiniPay extends ApplicationBase
+class ConsoleAppBala extends ApplicationBase
 {
 
 
@@ -34,7 +33,6 @@ class ConsoleAppMiniPay extends ApplicationBase
         $Commands[] = new dumpConfig();
 
 
-//        $Commands[] = new RpcGenerate();
         $Commands[] = new RpcGenerate2();
 
         $Commands[] = new RpcJsUrlsExport();
@@ -42,6 +40,7 @@ class ConsoleAppMiniPay extends ApplicationBase
         $Commands[] = new VueRpcExport();
         $Commands[] = new encodePassword();
         $Commands[] = new verifyEncodePassword();
+
 
         return $Commands;
     }

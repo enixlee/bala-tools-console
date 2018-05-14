@@ -52,6 +52,8 @@
     "nesbot/carbon": "^1.21",
     "hella-engine/support": "~1.0",
     "greenlion/php-sql-parser": "^4.1",
-    "pluto/core":"~2.0"
+    "pluto/core": "~2.0",
+    "pluto/supports": "~2.0",
+    "phpoffice/phpspreadsheet": "^1.2"
   }
 }

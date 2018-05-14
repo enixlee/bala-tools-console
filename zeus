@@ -13,5 +13,5 @@ foreach (array(__DIR__ . '/../../../autoload.php', __DIR__ . '/../../autoload.ph
 
 require ZEUS_COMPOSER_INSTALL;
 
-$app = new \ZeusConsole\ConsoleAppMiniPay ();
+$app = new \ZeusConsole\ConsoleAppBala ();
 $app->run();
