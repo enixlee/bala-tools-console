@@ -67,7 +67,7 @@ EOF;
     /**
      * @var %comment%|null \$item
      */
-    public function add%FunctionName%(%type% \$item = null)
+    public function add%FunctionName%(\$item = null)
     {
         if (is_null(\$this->%name%)) {
             \$this->%name% = [];

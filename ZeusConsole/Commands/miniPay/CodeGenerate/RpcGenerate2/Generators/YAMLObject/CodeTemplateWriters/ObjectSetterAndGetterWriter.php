@@ -70,7 +70,7 @@ EOF;
     /**
      * @var %comment%|null \$item
      */
-    public function add%FunctionName%(%type% \$item = null)
+    public function add%FunctionName%(\$item = null)
     {
         if (is_null(\$this->%name%)) {
             \$this->%name% = [];
@@ -79,13 +79,35 @@ EOF;
     }
 EOF;
 
+        $formatObject = <<<EOF
+        
+    /**
+     * @var %comment%|null \$item
+     */
+    public function add%FunctionName%(\$item = null)
+    {
+        if (is_null(\$this->%name%)) {
+            \$this->%name% = [];
+        }
+        if (is_array(\$item)) {
+            \$item = %type%::fromArray(\$item);
+        }elseif (\$item instanceof ObjectCreator) {
+            \$item = \$item->getObject();
+        }
+        \$this->%name%[] = \$item;
+    }
+EOF;
+
+        $type = $param->isObject() ? $param->getObjectTypeClassName() : $param->getOriginTypeDeclareAsString();
+
+        $transFormat = $param->isObject() ? $formatObject : $format;
         $setData = [
-            "%comment%" => $param->getTypeDeclareAsString(),
+            "%comment%" => $type,
             "%FunctionName%" => $param->getFunctionName(),
-            "%type%" => $param->getTypeDeclareAsString(),
+            "%type%" => $type,
             "%name%" => $param->getName()
         ];
-        $message = translator()->trans($format, $setData);
+        $message = translator()->trans($transFormat, $setData);
         return $message;
     }
 
@@ -122,6 +144,8 @@ EOF;
     {
         if (is_array(\$%name%)) {
             \$%name% = %type%::fromArray($%name%);
+        }elseif (\$%name% instanceof ObjectCreator) {
+            \$%name% = \$%name%->getObject();
         }
         \$this->%name% = \$%name%;
     }

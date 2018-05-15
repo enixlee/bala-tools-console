@@ -50,7 +50,7 @@ EOF;
     public function writeClassName()
     {
         $format = <<<EOF
-class %className%\n
+class %className% extends YAMLObject\n
 EOF;
         if (!is_null($this->mainClass->getExtends())) {
             $format = <<<EOF

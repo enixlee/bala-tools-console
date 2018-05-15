@@ -8,12 +8,12 @@
 
 namespace <?php echo $generateClass->getNameSpace()?>;
 
-use Pluto\Foundation\Serializer\ObjectSerializerTrait;
+use Pluto\Foundation\Serializer\YAMLObject\Creators\ObjectCreator;
+use Pluto\Foundation\Serializer\YAMLObject\YAMLObject;
 
 <?php echo $writer->writeClassComment() ?>
 <?php echo $writer->writeClassName() ?>
 {
-    use ObjectSerializerTrait;
 
 <?php echo $writer->writeObjectProperty() ?>
 <?php foreach ($generateClass->getParameters() as $param) : ?>
