@@ -72,6 +72,9 @@ EOF;
         if (is_null(\$this->%name%)) {
             \$this->%name% = [];
         }
+        if (is_array(\$item)) {
+            \$item = %type%::fromArray(\$item);
+        }
         \$this->%name%[] = \$item;
     }
 EOF;
