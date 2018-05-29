@@ -89,9 +89,11 @@ EOF;
         if (is_null(\$this->%name%)) {
             \$this->%name% = [];
         }
-        if (is_array(\$item)) {
+        if (\$item instanceof %type%) {
+
+        } elseif (is_array(\$item)) {
             \$item = %type%::fromArray(\$item);
-        }elseif (\$item instanceof ObjectCreator) {
+        } elseif (\$item instanceof ObjectCreator) {
             \$item = \$item->getObject();
         }
         \$this->%name%[] = \$item;
@@ -144,10 +146,25 @@ EOF;
     {
         if (is_array(\$%name%)) {
             \$%name% = %type%::fromArray($%name%);
-        }elseif (\$%name% instanceof ObjectCreator) {
+        } elseif (\$%name% instanceof ObjectCreator) {
             \$%name% = \$%name%->getObject();
         }
         \$this->%name% = \$%name%;
+    }
+EOF;
+        $formatMessageRepeat = <<<EOF
+        
+    /**
+     * @param %comment% \$%name%
+     */
+    public function set%FunctionName%(\$%name% = null)
+    {
+        \$this->%name% = [];
+        if (is_array(\$%name%)) {
+           foreach (\$%name% as \$itemValue) {
+                \$this->add%FunctionName%(\$itemValue);
+           }
+        }
     }
 EOF;
         $setData = [
@@ -160,7 +177,7 @@ EOF;
         if ($param->isObject() && !$param->isRepeated()) {
             $message = translator()->trans($formatMessageNotRepeat, $setData);
         } else if ($param->isObject() && $param->isRepeated()) {
-            $message = translator()->trans($formatMessage, $setData);
+            $message = translator()->trans($formatMessageRepeat, $setData);
         } else {
             $message = translator()->trans($formatNormal, $setData);
         }
