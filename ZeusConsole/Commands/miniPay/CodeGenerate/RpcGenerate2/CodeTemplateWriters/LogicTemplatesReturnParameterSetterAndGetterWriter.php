@@ -72,6 +72,19 @@ EOF;
         if (is_null(\$this->%name%)) {
             \$this->%name% = [];
         }
+        \$this->%name%[] = \$item;
+    }
+EOF;
+        $formatObject = <<<EOF
+        
+    /**
+     * @var %comment%|null \$item
+     */
+    public function add%FunctionName%(\$item = null)
+    {
+        if (is_null(\$this->%name%)) {
+            \$this->%name% = [];
+        }
         if (is_array(\$item)) {
             \$item = %type%::fromArray(\$item);
         }
@@ -94,7 +107,12 @@ EOF;
                 "%name%" => $param->getName()
             ];
         }
-        $message = translator()->trans($format, $setData);
+
+        if ($param->isMessage() || $param->isObject()) {
+            $message = translator()->trans($formatObject, $setData);
+        } else {
+            $message = translator()->trans($format, $setData);
+        }
         return $message;
 
 
