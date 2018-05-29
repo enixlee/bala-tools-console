@@ -134,6 +134,22 @@ EOF;
         \$this->%name% = \$%name%;
     }
 EOF;
+
+        $formatMessageRepeat = <<<EOF
+        
+    /**
+     * @param %comment% \$%name%
+     */
+    public function set%FunctionName%(\$%name% = null)
+    {
+        \$this->%name% = [];
+        if (is_array(\$%name%)) {
+           foreach (\$%name% as \$itemValue) {
+                \$this->add%FunctionName%(\$itemValue);
+           }
+        }
+    }
+EOF;
         $setData = [
             "%comment%" => $param->getVariableCommentString(),
             "%FunctionName%" => $param->getFunctionName(),
@@ -144,11 +160,11 @@ EOF;
         if ($param->isMessage() && !$param->isRepeated()) {
             $message = translator()->trans($formatMessageNotRepeat, $setData);
         } else if ($param->isMessage() && $param->isRepeated()) {
-            $message = translator()->trans($formatMessage, $setData);
+            $message = translator()->trans($formatMessageRepeat, $setData);
         } else if ($param->isObject() && !$param->isRepeated()) {
             $message = translator()->trans($formatMessageNotRepeat, $setData);
         } else if ($param->isObject() && $param->isRepeated()) {
-            $message = translator()->trans($formatMessage, $setData);
+            $message = translator()->trans($formatMessageRepeat, $setData);
 
         } else {
             $message = translator()->trans($formatNormal, $setData);
