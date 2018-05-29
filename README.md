@@ -2,6 +2,10 @@
 #   更新记录
 
 #   new Features/dev-master
+-   3.17.4
+    -   发布日期:2018年05月29日
+    -   更新内容:
+        -   修复RPCReturnParameter Bug
 -   3.17.3
     -   发布日期:2018年05月29日
     -   更新内容:
