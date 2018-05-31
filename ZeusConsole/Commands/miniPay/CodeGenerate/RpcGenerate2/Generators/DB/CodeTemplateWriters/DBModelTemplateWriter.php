@@ -91,7 +91,6 @@ EOF;
     function writeUseDocument()
     {
         $format = <<<EOF
-use Pluto\DataBases\Model;
 use Pluto\Interfaces\DataBases\ModelDataType;
 EOF;
 
