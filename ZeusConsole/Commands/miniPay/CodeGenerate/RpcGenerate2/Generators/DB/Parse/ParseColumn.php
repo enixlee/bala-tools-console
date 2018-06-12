@@ -23,6 +23,30 @@ class ParseColumn extends Parse
     protected $zerofill = false;
     protected $primary = false;
 
+    protected const phpTypeCasts = [
+        "int" => 'int',
+        "integer" => 'int',
+        "bigint" => 'string',
+        "real" => 'int',
+        "float" => 'float',
+        "double" => 'float',
+        "text" => 'string',
+        "char" => 'string',
+        "varchar" => 'string',
+        "date" => 'Carbon',
+        "datetime" => 'Carbon',
+        "timestamp" => 'int',
+        "tinyint" => 'int',
+        "smallint" => 'int',
+        "decimal" => 'float'
+    ];
+
+    public function getPhpType()
+    {
+        return self::phpTypeCasts[$this->getDateType()] ?? "mixed";
+
+    }
+
     /**
      * @return string
      */

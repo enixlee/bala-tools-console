@@ -53,7 +53,7 @@ class DBModelTemplateWriter extends WriterBase
 EOF;
 
         $formatProperty = <<<EOF
- * @property mixed %keyName%    %dateType%(%length%)    %nullAble% COMMENT %comment% \n
+ * @property %phpType%  %keyName%    %dateType%(%length%)    %nullAble% COMMENT %comment% \n
 EOF;
 
 
@@ -66,6 +66,7 @@ EOF;
             }
             $castString .= translator()->trans($formatProperty,
                 [
+                    "%phpType%" => $column->getPhpType(),
                     "%keyName%" => $column->getName(),
                     "%dateType%" => $column->getDateType(),
                     "%nullAble%" => $column->isNullAble() ? "NULL" : "NOT NULL",
@@ -91,6 +92,7 @@ EOF;
     function writeUseDocument()
     {
         $format = <<<EOF
+use Carbon\Carbon;
 use Pluto\Interfaces\DataBases\ModelDataType;
 EOF;
 
