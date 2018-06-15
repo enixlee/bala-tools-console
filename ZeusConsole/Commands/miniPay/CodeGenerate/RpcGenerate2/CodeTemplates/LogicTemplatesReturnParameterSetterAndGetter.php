@@ -6,7 +6,7 @@
      */
     public function get<?php echo $param->getFunctionName()?>()
     {
-        return $this-><?php echo $param->getName();?>;
+        return $this->getObjectData('<?php echo $param->getName();?>', null);
     }
 <?php echo $writer->writeSetFunction() ?>
 <?php echo $writer->writeResetFunction() ?>

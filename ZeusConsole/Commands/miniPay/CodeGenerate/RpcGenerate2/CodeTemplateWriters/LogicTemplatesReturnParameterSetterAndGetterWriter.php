@@ -34,7 +34,7 @@ class LogicTemplatesReturnParameterSetterAndGetterWriter extends WriterBase
     /**
      * @var %type% %comment%
      */
-    private \$%name% = %defaultValue%;
+    //private \$%name% = %defaultValue%;
 EOF;
         $param = $this->param;
 
@@ -69,10 +69,9 @@ EOF;
      */
     public function add%FunctionName%(\$item = null)
     {
-        if (is_null(\$this->%name%)) {
-            \$this->%name% = [];
-        }
-        \$this->%name%[] = \$item;
+        \$origin_data = \$this->getObjectData('%name%', []);
+        \$origin_data[] = \$item;
+        \$this->setObjectData('%name%', \$origin_data);
     }
 EOF;
         $formatObject = <<<EOF
@@ -82,13 +81,9 @@ EOF;
      */
     public function add%FunctionName%(\$item = null)
     {
-        if (is_null(\$this->%name%)) {
-            \$this->%name% = [];
-        }
-        if (is_array(\$item)) {
-            \$item = %type%::fromArray(\$item);
-        }
-        \$this->%name%[] = \$item;
+        \$origin_data = \$this->getObjectData('%name%', []);
+        \$origin_data[] = \$item;
+        \$this->setObjectData('%name%', \$origin_data);
     }
 EOF;
 
@@ -128,7 +123,7 @@ EOF;
      */
     public function set%FunctionName%(%type% \$%name% = null)
     {
-        \$this->%name% = \$%name%;
+        \$this->setObjectData('%name%', \$%name%);
     }
 EOF;
 
@@ -139,7 +134,7 @@ EOF;
      */
     public function set%FunctionName%($%name% = null)
     {
-        \$this->%name% = \$%name%;
+        \$this->setObjectData('%name%', \$%name%);
     }
 EOF;
         $formatMessageNotRepeat = <<<EOF
@@ -149,10 +144,7 @@ EOF;
      */
     public function set%FunctionName%(\$%name% = null)
     {
-        if (is_array(\$%name%)) {
-            \$%name% = %type%::fromArray($%name%);
-        }
-        \$this->%name% = \$%name%;
+        \$this->setObjectData('%name%', \$%name%);
     }
 EOF;
 
@@ -163,12 +155,7 @@ EOF;
      */
     public function set%FunctionName%(\$%name% = null)
     {
-        \$this->%name% = [];
-        if (is_array(\$%name%)) {
-           foreach (\$%name% as \$itemValue) {
-                \$this->add%FunctionName%(\$itemValue);
-           }
-        }
+        \$this->setObjectData('%name%', \$%name%);
     }
 EOF;
         $setData = [
@@ -204,7 +191,7 @@ EOF;
      */
     public function reset%FunctionName%ToDefault(\$%name% = %defaultValue%)
     {
-        \$this->%name% = \$%name%;
+        \$this->setObjectData('%name%', \$%name%);
     }
 EOF;
 

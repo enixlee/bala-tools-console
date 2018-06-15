@@ -35,7 +35,7 @@ class ObjectSetterAndGetterWriter extends WriterBase
     /**
      * @var %type% %comment%
      */
-    private \$%name% = %defaultValue%;
+    //private \$%name% = %defaultValue%;
 EOF;
         $param = $this->param;
 
@@ -62,6 +62,43 @@ EOF;
         return translator()->trans($format, $setData);
     }
 
+    public function writeGetFunction()
+    {
+        $format = <<<EOF
+
+    /**
+     * @return %type% %comment%
+     */
+    public function get%FunctionName%()
+    {
+        return \$this->getObjectData('%name%', %defaultValue%);
+    }
+EOF;
+        $param = $this->param;
+
+        if ($this->param->isRepeated()) {
+            $value = "null";
+        } elseif (is_null($this->param->getDefault())) {
+            $value = "null";
+        } elseif ($this->param->is_string()) {
+            $value = '"' . strval($this->param->getDefault()) . '"';
+        } else {
+            $value = $this->param->getDefault();
+        }
+
+
+        $setData = [
+            "%comment%" => $param->getComment(),
+            "%type%" => $param->getVariableCommentString(),
+            "%name%" => $param->getName(),
+            "%defaultValue%" => $value,
+            "%FunctionName%" => $param->getFunctionName(),
+        ];
+
+        return translator()->trans($format, $setData);
+
+    }
+
     public function writeAddFunction()
     {
         $param = $this->param;
@@ -72,10 +109,9 @@ EOF;
      */
     public function add%FunctionName%(\$item = null)
     {
-        if (is_null(\$this->%name%)) {
-            \$this->%name% = [];
-        }
-        \$this->%name%[] = \$item;
+        \$origin_data = \$this->getObjectData('%name%', []);
+        \$origin_data[] = \$item;
+        \$this->setObjectData('%name%', \$origin_data);
     }
 EOF;
 
@@ -86,17 +122,9 @@ EOF;
      */
     public function add%FunctionName%(\$item = null)
     {
-        if (is_null(\$this->%name%)) {
-            \$this->%name% = [];
-        }
-        if (\$item instanceof %type%) {
-
-        } elseif (is_array(\$item)) {
-            \$item = %type%::fromArray(\$item);
-        } elseif (\$item instanceof ObjectCreator) {
-            \$item = \$item->getObject();
-        }
-        \$this->%name%[] = \$item;
+        \$origin_data = \$this->getObjectData('%name%', []);
+        \$origin_data[] = \$item;
+        \$this->setObjectData('%name%', \$origin_data);
     }
 EOF;
 
@@ -123,7 +151,7 @@ EOF;
      */
     public function set%FunctionName%(%type% \$%name% = null)
     {
-        \$this->%name% = \$%name%;
+        \$this->setObjectData('%name%', \$%name%);
     }
 EOF;
 
@@ -134,7 +162,7 @@ EOF;
      */
     public function set%FunctionName%($%name% = null)
     {
-        \$this->%name% = \$%name%;
+        \$this->setObjectData('%name%', \$%name%);
     }
 EOF;
         $formatMessageNotRepeat = <<<EOF
@@ -144,12 +172,7 @@ EOF;
      */
     public function set%FunctionName%(\$%name% = null)
     {
-        if (is_array(\$%name%)) {
-            \$%name% = %type%::fromArray($%name%);
-        } elseif (\$%name% instanceof ObjectCreator) {
-            \$%name% = \$%name%->getObject();
-        }
-        \$this->%name% = \$%name%;
+        \$this->setObjectData('%name%', \$%name%);
     }
 EOF;
         $formatMessageRepeat = <<<EOF
@@ -159,12 +182,7 @@ EOF;
      */
     public function set%FunctionName%(\$%name% = null)
     {
-        \$this->%name% = [];
-        if (is_array(\$%name%)) {
-           foreach (\$%name% as \$itemValue) {
-                \$this->add%FunctionName%(\$itemValue);
-           }
-        }
+        \$this->setObjectData('%name%', \$%name%);
     }
 EOF;
         $setData = [
@@ -195,7 +213,7 @@ EOF;
      */
     public function reset%FunctionName%ToDefault(\$%name% = %defaultValue%)
     {
-        \$this->%name% = \$%name%;
+        \$this->setObjectData('%name%', \$%name%);
     }
 EOF;
 

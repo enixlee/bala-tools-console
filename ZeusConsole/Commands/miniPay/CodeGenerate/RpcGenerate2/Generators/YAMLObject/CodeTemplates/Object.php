@@ -9,7 +9,7 @@
 namespace <?php echo $generateClass->getNameSpace()?>;
 
 use Pluto\Foundation\Serializer\YAMLObject\Creators\ObjectCreator;
-use Pluto\Foundation\Serializer\YAMLObject\YAMLObject;
+use Pluto\Foundation\Serializer\YAMLObject\YAMLArrayObject;
 
 <?php echo $writer->writeClassComment() ?>
 <?php echo $writer->writeClassName() ?>
