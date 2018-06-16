@@ -71,7 +71,27 @@ EOF;
     public function writeObjectProperty()
     {
 
+        $fillableFormatNoExtends = <<<EOF
+    protected \$fillable = [
+%fillable%        
+    ];
+    
+EOF;
+        $fillableFormatExtends = <<<EOF
+    public function getFillable()
+    {
+        return array_merge(parent::getFillable(),
+            [
+%fillable%
+            ]);
+    }
+
+EOF;
+
+
         $format = <<<EOF
+%fillable%
+
     /**
      * 对象名称
      * @return string
@@ -91,7 +111,24 @@ EOF;
     }
 
 EOF;
+        $fillParameters = "";
+        $parameters = $this->mainClass->getParameters();
+        foreach ($parameters as $parameter) {
+            $fillParameters .= $this->format_tab_2 . $this->format_tab_2 . "'{$parameter->getName()}'" . ",\n";
+        }
+
+        $fillDataSetData = [
+            '%fillable%' => $fillParameters,
+        ];
+        if (is_null($this->mainClass->getExtends())) {
+            $fillData = translator()->trans($fillableFormatNoExtends, $fillDataSetData);
+        } else {
+            $fillData = translator()->trans($fillableFormatExtends, $fillDataSetData);
+        }
+
+
         $setData = [
+            '%fillable%' => $fillData,
             "%className%" => $this->mainClass->getClassName(),
             "%version%" => $this->mainClass->getVersion(),
         ];

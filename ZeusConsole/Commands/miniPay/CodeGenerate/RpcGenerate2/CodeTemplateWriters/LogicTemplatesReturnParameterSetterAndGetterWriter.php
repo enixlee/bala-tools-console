@@ -69,9 +69,9 @@ EOF;
      */
     public function add%FunctionName%(\$item = null)
     {
-        \$origin_data = \$this->getObjectData('%name%', []);
-        \$origin_data[] = \$item;
-        \$this->setObjectData('%name%', \$origin_data);
+        \$origin_data = \$this->getOriginArrayData('%name%', []);
+        \$origin_data[] = \$this->convertValue(\$item);
+        \$this->setOriginArrayData('%name%', \$origin_data);
     }
 EOF;
         $formatObject = <<<EOF
@@ -81,9 +81,9 @@ EOF;
      */
     public function add%FunctionName%(\$item = null)
     {
-        \$origin_data = \$this->getObjectData('%name%', []);
-        \$origin_data[] = \$item;
-        \$this->setObjectData('%name%', \$origin_data);
+        \$origin_data = \$this->getOriginArrayData('%name%', []);
+        \$origin_data[] = \$this->convertValue(\$item);
+        \$this->setOriginArrayData('%name%', \$origin_data);
     }
 EOF;
 
@@ -123,7 +123,7 @@ EOF;
      */
     public function set%FunctionName%(%type% \$%name% = null)
     {
-        \$this->setObjectData('%name%', \$%name%);
+        \$this->setOriginArrayData('%name%', \$%name%);
     }
 EOF;
 
@@ -134,7 +134,7 @@ EOF;
      */
     public function set%FunctionName%($%name% = null)
     {
-        \$this->setObjectData('%name%', \$%name%);
+        \$this->setOriginArrayData('%name%', \$%name%);
     }
 EOF;
         $formatMessageNotRepeat = <<<EOF
@@ -144,7 +144,7 @@ EOF;
      */
     public function set%FunctionName%(\$%name% = null)
     {
-        \$this->setObjectData('%name%', \$%name%);
+        \$this->setOriginArrayData('%name%', \$%name%);
     }
 EOF;
 
@@ -155,7 +155,15 @@ EOF;
      */
     public function set%FunctionName%(\$%name% = null)
     {
-        \$this->setObjectData('%name%', \$%name%);
+        \$setData = [];
+        if (is_array(\$%name%)) {
+            foreach (\$%name% as \$item) {
+                \$setData[] = \$this->convertValue(\$item);
+            }
+        } else {
+            \$setData = \$%name%;
+        }
+        \$this->setOriginArrayData('%name%', \$setData);
     }
 EOF;
         $setData = [
@@ -191,7 +199,7 @@ EOF;
      */
     public function reset%FunctionName%ToDefault(\$%name% = %defaultValue%)
     {
-        \$this->setObjectData('%name%', \$%name%);
+        \$this->setOriginArrayData('%name%', \$%name%);
     }
 EOF;
 
