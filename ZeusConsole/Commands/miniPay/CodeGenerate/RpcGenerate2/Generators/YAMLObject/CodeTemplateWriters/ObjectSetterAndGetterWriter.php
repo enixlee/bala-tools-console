@@ -67,11 +67,51 @@ EOF;
         $format = <<<EOF
 
     /**
+     * @param bool \$originData
      * @return %type% %comment%
      */
-    public function get%FunctionName%()
+    public function get%FunctionName%(\$originData = false)
     {
         return \$this->getOriginArrayData('%name%', %defaultValue%);
+    }
+EOF;
+        $formatObjectNotRepeat = <<<EOF
+
+    /**
+     * @param bool \$originData
+     * @return %type%|array|mixed %comment%
+     */
+    public function get%FunctionName%(\$originData = false)
+    {
+        if (\$originData) {
+            return \$this->getOriginArrayData('%name%',  %defaultValue%);
+        }
+        \$data = \$this->getOriginArrayData('%name%',  %defaultValue%);
+        return %typeSingle%::fromData(\$data);
+    }
+EOF;
+        $formatObjectRepeat = <<<EOF
+
+    /**
+     * @param bool \$originData
+     * @return %type%|array|mixed %comment%
+     */
+    public function get%FunctionName%(\$originData = false)
+    {
+        if (\$originData) {
+            return \$this->getOriginArrayData('%name%',  %defaultValue%);
+        }
+        \$data = null;
+        \$items = \$this->getOriginArrayData('%name%',  %defaultValue%);
+        if (is_array(\$items)) {
+            \$data = [];
+            foreach (\$items as \$item) {
+                \$data[] = %typeSingle%::fromData(\$item);
+            }
+        } else {
+            \$data = \$items;
+        }
+        return \$data;
     }
 EOF;
         $param = $this->param;
@@ -93,9 +133,20 @@ EOF;
             "%name%" => $param->getName(),
             "%defaultValue%" => $value,
             "%FunctionName%" => $param->getFunctionName(),
+            '%typeSingle%' => $param->getTypeDeclareAsString()
         ];
 
-        return translator()->trans($format, $setData);
+        if ($param->isObject()) {
+            if ($param->isRepeated()) {
+                $transFormat = $formatObjectRepeat;
+            } else {
+                $transFormat = $formatObjectNotRepeat;
+            }
+        } else {
+            $transFormat = $format;
+        }
+//        $transFormat = $param->isObject() ? $formatObject : $format;
+        return translator()->trans($transFormat, $setData);
 
     }
 
