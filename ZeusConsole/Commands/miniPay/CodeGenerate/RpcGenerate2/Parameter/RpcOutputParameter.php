@@ -208,6 +208,17 @@ class RpcOutputParameter extends ParameterBase
         return $declare;
     }
 
+    public function getVariableType()
+    {
+        $declare = parent::getTypeDeclareAsString();
+        if ($this->isMessage()) {
+            $declare = $this->getMessageClassName();
+        } elseif ($this->isObject()) {
+            $declare = $this->getObjectFullClassName();
+        }
+        return $declare;
+    }
+
     /**
      * 获取原始的类型说明
      * @return string
