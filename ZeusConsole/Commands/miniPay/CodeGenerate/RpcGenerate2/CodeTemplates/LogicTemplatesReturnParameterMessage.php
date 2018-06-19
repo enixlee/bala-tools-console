@@ -7,7 +7,7 @@
 
 namespace <?php echo $generateClass->getNameSpace()?>\RPC;
 
-use Pluto\Foundation\Serializer\ObjectSerializerTrait;
+use Pluto\Foundation\Serializer\YAMLObject\ArrayObject;
 
 /**
  *
@@ -16,9 +16,8 @@ use Pluto\Foundation\Serializer\ObjectSerializerTrait;
  * <?php echo $generateClass->getRpcReturnParametersClassName() . "\n"?>
  * @package <?php echo $generateClass->getNameSpace()?>\RPC
  */
-class <?php printf($rpcOutputParameter->getMessageClassName()."\n") ?>
+class <?php printf($rpcOutputParameter->getMessageClassName()." extends ArrayObject\n") ?>
 {
-    use ObjectSerializerTrait;
 <?php foreach ($rpcOutputParameter->getMessageData() as $param) : ?>
     <?php echo $view->render('LogicTemplatesReturnParameterSetterAndGetter.php',['param'=>$param]) ?>
     <?php echo "\n" ?>
