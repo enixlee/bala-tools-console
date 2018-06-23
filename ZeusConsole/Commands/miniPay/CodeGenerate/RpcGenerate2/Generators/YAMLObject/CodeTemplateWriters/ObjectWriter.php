@@ -138,4 +138,31 @@ EOF;
     }
 
 
+    public function writeFunctionResetToDefault()
+    {
+        $resetFormat = <<<EOF
+    protected function initializeWithDefault()
+    {
+        parent::initializeWithDefault();
+%resetFunctions%
+        return \$this;
+    }
+EOF;
+
+        $resetFunctions = "";
+        $parameters = $this->mainClass->getParameters();
+        foreach ($parameters as $parameter) {
+            if ($parameter->hasDefault()) {
+                $resetFunctions .= $this->format_tab_2 . "\$this->reset{$parameter->getFunctionName()}ToDefault();\n";
+            } elseif ($parameter->isRequire() && $parameter->isRepeated()) {
+                //必须传递的数组
+                $resetFunctions .= $this->format_tab_2 . "\$this->reset{$parameter->getFunctionName()}ToDefault();\n";
+            }
+        }
+
+        $setData = ["%resetFunctions%" => $resetFunctions];
+        return translator()->trans($resetFormat, $setData);
+    }
+
+
 }

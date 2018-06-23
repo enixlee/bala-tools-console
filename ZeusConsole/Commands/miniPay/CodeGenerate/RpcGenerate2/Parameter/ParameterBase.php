@@ -136,6 +136,15 @@ abstract class ParameterBase
     }
 
     /**
+     * 是否有默认值
+     * @return bool
+     */
+    public function hasDefault()
+    {
+        return !is_null($this->default);
+    }
+
+    /**
      * @return string|null
      */
     public function getDefault()

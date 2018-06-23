@@ -1,4 +1,5 @@
 <?php echo "<?php" ?>
+<?php $writer = new \ZeusConsole\Commands\miniPay\CodeGenerate\RpcGenerate2\CodeTemplateWriters\LogicTemplatesReturnParameterWriter($generateClass)?>
 
 /**
  * Created by Generator.
@@ -20,6 +21,9 @@ use Pluto\Foundation\Serializer\YAMLObject\ReturnParameterObject;
 class <?php echo $generateClass->getRpcReturnParametersClassName()." extends ReturnParameterObject\n" ?>
 {
     use ReturnParameterSerializerTrait;
+
+<?php echo $writer->writeFunctionResetToDefault() ?>
+
 <?php foreach ($rpcOutputParameters as $param) : ?>
     <?php echo $view->render('LogicTemplatesReturnParameterSetterAndGetter.php',['param'=>$param]) ?>
     <?php echo "\n" ?>

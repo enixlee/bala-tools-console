@@ -16,6 +16,9 @@ use Pluto\Foundation\Serializer\YAMLObject\YAMLArrayObject;
 {
 
 <?php echo $writer->writeObjectProperty() ?>
+
+<?php echo $writer->writeFunctionResetToDefault() ?>
+
 <?php foreach ($generateClass->getParameters() as $param) : ?>
 <?php echo $view->render('ObjectSetterAndGetter.php',['param'=>$param]) ?>
 <?php echo "\n" ?>
